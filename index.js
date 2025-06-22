@@ -1,4 +1,4 @@
-let words = "";
+let data = [];
 // make call to MIT
 async function getData() {
 	try {
@@ -17,6 +17,7 @@ async function getData() {
 
 getData();
 
+
 backup = [
 "a",
 "aa",
@@ -27,8 +28,8 @@ backup = [
 "abc",
 "aberdeen",
 "abilities",
-"ability",",
-"able",",
+"ability",
+"able",
 "aboriginal",
 "abortion",
 "about",
@@ -10019,3 +10020,55 @@ backup = [
 "zum",
 "zus"
 ];
+
+console.log(backup);
+console.log(data);
+
+// numbers 0-.08
+// punctuation .08-.16
+// words .16-1
+
+// format words used in display
+let displayWords = "";
+
+while (displayWords.split(" ").length < 100) {
+	const wordNumOrPunc = Math.random();
+	
+	if (wordNumOrPunc < .08) {
+		const num = getRandomNumber();
+		displayWords += num.toString() + " ";
+	}
+	
+	if (wordNumOrPunc >= .08 && wordNumOrPunc < .16) {
+		const punc = getRandomPunctuation();
+		displayWords += punc; 
+	}
+
+	if (wordNumOrPunc >= .16) {
+		const index = Math.floor(Math.random() * 10000); 
+		displayWords += backup[index] + " ";
+	}	
+}
+
+console.log(displayWords);
+
+function getRandomNumber() {
+	return Math.floor(Math.random() * 100);
+}
+
+function getRandomPunctuation() {
+	const punctuation = "~`!@#$%^&*(){}[]/?=+|'-_,.;:"
+	const randomIndex = Math.floor(Math.random() * punctuation.length);
+	return punctuation.charAt(randomIndex);
+}
+
+function displayWordsToHtml() { 
+	const displayElement = document.getElementById("display-words");
+	if (displayElement) {
+		displayElement.innerHTML = displayWords;
+	}
+}
+
+window.onload = function() {
+	displayWordsToHtml();
+}
