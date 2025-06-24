@@ -10062,7 +10062,7 @@ function getRandomPunctuation() {
 	return punctuation.charAt(randomIndex);
 }
 
-function displayWordsToHtml() { 
+function displayWordsToHtml(displayWords) { 
 	const displayElement = document.getElementById("display-words");
 	if (displayElement) {
 		displayElement.innerHTML = displayWords;
@@ -10070,5 +10070,19 @@ function displayWordsToHtml() {
 }
 
 window.onload = function() {
-	displayWordsToHtml();
+	displayWordsToHtml(displayWords);
 }
+
+let goodWords = "";
+let goodIndex = 0;
+window.addEventListener("keyup", function (e) {
+	if (e.key == displayWords.charAt(goodIndex)) {
+		const displayGoodWords = document.getElementById("good-words");
+		if (displayGoodWords) {
+			goodWords += e.key;
+			displayGoodWords.innerHTML = goodWords;
+			goodIndex++;
+			displayWordsToHtml(displayWords.substring(goodIndex));			
+		}
+	}
+});
