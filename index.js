@@ -10069,20 +10069,40 @@ function displayWordsToHtml(displayWords) {
 	}
 }
 
+function displayTimer(time) {
+	const timerElement = document.getElementById("timer");
+	if (timerElement) {
+		timerElement.innerHTML = String(time) + " ms";
+	}
+}
 window.onload = function() {
 	displayWordsToHtml(displayWords);
 }
 
 let goodWords = "";
 let goodIndex = 0;
+let startTime;
+let endTime;
+let started = false;
 window.addEventListener("keyup", function (e) {
+	if (!started) {
+		startTime = Date.now();
+		started = true;
+	}
 	if (e.key == displayWords.charAt(goodIndex)) {
 		const displayGoodWords = document.getElementById("good-words");
 		if (displayGoodWords) {
 			goodWords += e.key;
 			displayGoodWords.innerHTML = goodWords;
 			goodIndex++;
-			displayWordsToHtml(displayWords.substring(goodIndex));			
+			const reducedDisplayWords = displayWords.substring(goodIndex);
+			if (reducedDisplayWords.length == 0) {
+				endTime = Date.now();
+				const elapsedTime = startTime - endTime;
+				displayTimer(elapsedTime);
+			}  else {
+				displayWordsToHtml(reducedDisplayWords);
+			}
 		}
 	}
 });
