@@ -10057,7 +10057,7 @@ function getRandomNumber() {
 }
 
 function getRandomPunctuation() {
-	const punctuation = "~`!@#$%^&*(){}[]/?=+|'-_,.;:"
+	const punctuation = "~`!@#$%^&*(){}[]/?=+|'-_,.;:";
 	const randomIndex = Math.floor(Math.random() * punctuation.length);
 	return punctuation.charAt(randomIndex);
 }
@@ -10075,6 +10075,7 @@ function displayTimer(time) {
 		timerElement.innerHTML = String(time) + " ms";
 	}
 }
+
 window.onload = function() {
 	displayWordsToHtml(displayWords);
 }
