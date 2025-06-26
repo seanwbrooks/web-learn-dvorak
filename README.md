@@ -34,9 +34,15 @@ JS file
  c. validation of form
 
 Where to host?
-AWS
-S3
-DNS
+Raspberry Pi 3 Model 3+
+Installing Nginx (most popular, lightweight web server--considered lighttpd)
+`sudo apt-get install nginx`
+Configuring the Web Server
+`/etc/nginx/sites-available/`
+
+Client connection to Pi via local network IP
+
+TODO: DNS
 
 
 
