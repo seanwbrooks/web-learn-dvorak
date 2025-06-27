@@ -10031,7 +10031,7 @@ console.log(data);
 // format words used in display
 let displayWords = "";
 
-while (displayWords.split(" ").length < 100) {
+while (displayWords.split(" ").length < 50) {
 	const wordNumOrPunc = Math.random();
 	
 	if (wordNumOrPunc < .08) {
@@ -10049,8 +10049,6 @@ while (displayWords.split(" ").length < 100) {
 		displayWords += backup[index] + " ";
 	}	
 }
-
-console.log(displayWords);
 
 function getRandomNumber() {
 	return Math.floor(Math.random() * 100);
@@ -10070,9 +10068,21 @@ function displayWordsToHtml(displayWords) {
 }
 
 function displayTimer(time) {
-	const timerElement = document.getElementById("timer");
-	if (timerElement) {
-		timerElement.innerHTML = String(time) + " ms";
+	if (time <= 1) {
+		const goodTimeElement = document.getElementById("good-time");
+		if (goodTimeElement) {
+			goodTimeElement.innerHTML = String(time) + " minutes";
+		}
+	} else if (time <= 1.2 && time > 1) {
+		const averageTimeElement = document.getElementById("ave-time");
+		if (averageTimeElement) {
+			averagTimeElement.innerHTML = String(time) + " minutes";
+		}
+	} else {
+		const timeElement = document.getElementById("time");
+		if (timeElement) {
+			averagTimeElement.innerHTML = String(time) + " minutes";
+		}
 	}
 }
 
@@ -10099,7 +10109,7 @@ window.addEventListener("keyup", function (e) {
 			const reducedDisplayWords = displayWords.substring(goodIndex);
 			if (reducedDisplayWords.length == 0) {
 				endTime = Date.now();
-				const elapsedTime = startTime - endTime;
+				const elapsedTime = (endTime - startTime) * 100 * 60;
 				displayTimer(elapsedTime);
 			}  else {
 				displayWordsToHtml(reducedDisplayWords);
