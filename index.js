@@ -10076,7 +10076,7 @@ function displayTimer(time) {
 	} else if (time <= 1.2 && time > 1) {
 		const averageTimeElement = document.getElementById("ave-time");
 		if (averageTimeElement) {
-			averagTimeElement.innerHTML = String(time) + " minutes";
+			averageTimeElement.innerHTML = String(time) + " minutes";
 		}
 	} else {
 		const timeElement = document.getElementById("time");
