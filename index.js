@@ -10081,7 +10081,7 @@ function displayTimer(time) {
 	} else {
 		const timeElement = document.getElementById("time");
 		if (timeElement) {
-			averagTimeElement.innerHTML = String(time) + " minutes";
+			timeElement.innerHTML = String(time) + " minutes";
 		}
 	}
 }
