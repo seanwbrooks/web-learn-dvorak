@@ -10100,6 +10100,25 @@ window.addEventListener("keyup", function (e) {
 		startTime = Date.now();
 		started = true;
 	}
+
+	if (e.key == "Backspace") {
+		if (goodIndex == 0) {
+			return;
+		}
+
+		const displayGoodWords = document.getElementById("good-words");
+		if (displayGoodWords) {
+			const lastChar = goodWords.slice(-1);
+			goodIndex--;
+			goodWords = goodWords.slice(0, goodIndex);
+			displayGoodWords.innerHTML = goodWords;
+			const addDisplayWords = displayWords.slice(goodIndex);
+			displayWordsToHtml(addDisplayWords);
+		}
+
+		return;
+	}
+
 	if (e.key == displayWords.charAt(goodIndex)) {
 		const displayGoodWords = document.getElementById("good-words");
 		if (displayGoodWords) {
