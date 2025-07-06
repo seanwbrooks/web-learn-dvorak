@@ -1,24 +1,4 @@
-let data = [];
-// make call to MIT
-async function getData() {
-	try {
-		const response = await fetch("https://www.mit.edu/~ecprice/wordlist.10000");
-
-		if (!response.ok) {
-			console.log(response.status);
-			throw new Error("api response failed");
-		}
-		console.log(response);
-		const data = await response.json();
-	} catch (error) {
-		console.log(error.message);
-	}
-}
-
-getData();
-
-
-backup = [
+const data = [
 "a",
 "aa",
 "aaa",
@@ -10021,9 +10001,6 @@ backup = [
 "zus"
 ];
 
-console.log(backup);
-console.log(data);
-
 // numbers 0-.08
 // punctuation .08-.16
 // words .16-1
@@ -10046,7 +10023,7 @@ while (displayWords.split(" ").length < 50) {
 
 	if (wordNumOrPunc >= .16) {
 		const index = Math.floor(Math.random() * 10000); 
-		displayWords += backup[index] + " ";
+		displayWords += data[index] + " ";
 	}	
 }
 
@@ -10067,21 +10044,16 @@ function displayWordsToHtml(displayWords) {
 	}
 }
 
-function displayTimer(wpm) {
-	if (wpm >= 60) {
-		const goodTimeElement = document.getElementById("good-time");
-		if (goodTimeElement) {
-			goodTimeElement.innerHTML = String(wpm) + " wpm";
-		}
-	} else if (wpm < 60 && wpm >= 40) {
-		const averageTimeElement = document.getElementById("ave-time");
-		if (averageTimeElement) {
-			averageTimeElement.innerHTML = String(wpm) + " wpm";
-		}
-	} else {
-		const timeElement = document.getElementById("time");
-		if (timeElement) {
-			timeElement.innerHTML = String(wpm) + " wpm";
+function displayPerformance(wpm) {
+	const wpmElement = document.getElementById("wpm");
+	if (wpmElement) {
+		wpmElement.innerHTML = String(wpm) + " wpm";
+		if (wpm >= 60) {
+			wpmElement.setAttribute("style", "color: green;");
+		} else if (wpm < 60 && wpm >= 40) {
+			wpmElement.setAttribute("style", "color: orange;");
+		} else {
+			wpmElement.setAttribute("style", "color: red;");
 		}
 	}
 }
@@ -10130,7 +10102,7 @@ window.addEventListener("keyup", function (e) {
 				endTime = Date.now();
 				const elapsedTimeInMins = (endTime - startTime) / 60000;
 				const wpm = Math.round(50 / elapsedTimeInMins);
-				displayTimer(wpm);
+				displayPerformance(wpm);
 			}  else {
 				displayWordsToHtml(reducedDisplayWords);
 			}
