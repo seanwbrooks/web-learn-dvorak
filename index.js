@@ -10067,21 +10067,21 @@ function displayWordsToHtml(displayWords) {
 	}
 }
 
-function displayTimer(time) {
-	if (time <= 1) {
+function displayTimer(wpm) {
+	if (wpm >= 60) {
 		const goodTimeElement = document.getElementById("good-time");
 		if (goodTimeElement) {
-			goodTimeElement.innerHTML = String(time) + " minutes";
+			goodTimeElement.innerHTML = String(wpm) + " wpm";
 		}
-	} else if (time <= 1.2 && time > 1) {
+	} else if (wpm < 60 && wpm >= 40) {
 		const averageTimeElement = document.getElementById("ave-time");
 		if (averageTimeElement) {
-			averageTimeElement.innerHTML = String(time) + " minutes";
+			averageTimeElement.innerHTML = String(wpm) + " wpm";
 		}
 	} else {
 		const timeElement = document.getElementById("time");
 		if (timeElement) {
-			timeElement.innerHTML = String(time) + " minutes";
+			timeElement.innerHTML = String(wpm) + " wpm";
 		}
 	}
 }
@@ -10128,8 +10128,9 @@ window.addEventListener("keyup", function (e) {
 			const reducedDisplayWords = displayWords.substring(goodIndex);
 			if (reducedDisplayWords.length == 0) {
 				endTime = Date.now();
-				const elapsedTime = (endTime - startTime) * 100 * 60;
-				displayTimer(elapsedTime);
+				const elapsedTimeInMins = (endTime - startTime) / 60000;
+				const wpm = Math.round(50 / elapsedTimeInMins);
+				displayTimer(wpm);
 			}  else {
 				displayWordsToHtml(reducedDisplayWords);
 			}
