@@ -10071,8 +10071,11 @@ window.addEventListener("keyup", function (e) {
 	if (!started) {
 		startTime = Date.now();
 		started = true;
+		console.log(started);
 	}
-
+	
+	console.log(e.key);
+	
 	if (e.key == "Backspace") {
 		if (goodIndex == 0) {
 			return;
