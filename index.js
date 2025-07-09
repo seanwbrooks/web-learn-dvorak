@@ -10110,5 +10110,7 @@ window.addEventListener("keyup", function (e) {
 				displayWordsToHtml(reducedDisplayWords);
 			}
 		}
+	} else {
+		console.log("going to built interactive light-up keyboard");
 	}
 });
