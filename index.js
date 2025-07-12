@@ -10111,6 +10111,17 @@ window.addEventListener("keyup", function (e) {
 			}
 		}
 	} else {
-		console.log("going to built interactive light-up keyboard");
+		const keyToHit = displayWords.charAt(goodIndex).toLowerCase();
+		const elementToHit = document.getElementById(keyToHit);
+		console.log(keyToHit);
+		console.log(elementToHit);
+		if (elementToHit) {
+			elementToHit.setAttribute("class", "highlight");
+			console.log("added");
+			setTimeout(function() {
+				elementToHit.removeAttribute("class", "highlight");
+				console.log("removed");
+			}, 2000);
+		}
 	}
 });
