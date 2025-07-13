@@ -10061,7 +10061,79 @@ function displayPerformance(wpm) {
 window.onload = function() {
 	displayWordsToHtml(displayWords);
 }
-
+let badKeys = {
+	"`": 0,
+	"1": 0,
+	"2": 0,
+	"3": 0,
+	"4": 0,
+	"5": 0,
+	"6": 0,
+	"7": 0,
+	"8": 0,
+	"9": 0,
+	"0": 0,
+	"[": 0,
+	"]": 0,
+	"\'": 0,
+	",": 0,
+	".": 0,
+	"p": 0,
+	"y": 0,
+	"f": 0,
+	"g": 0,
+	"c": 0,
+	"r": 0,
+	"l": 0,
+	"/": 0,
+	"=": 0,
+	"\\": 0,
+	"a": 0,
+	"o": 0,
+	"e": 0,
+	"u": 0,
+	"i": 0,
+	"d": 0,
+	"h": 0,
+	"t": 0,
+	"n": 0,
+	"s": 0,
+	"-": 0,
+	":": 0,
+	"q": 0,
+	"j": 0,
+	"k": 0,
+	"x": 0,
+	"b": 0,
+	"m": 0,
+	"w": 0,
+	"v": 0,
+	"z": 0
+};
+const keyMap = {
+	"~": "`",
+	"!": "1",
+	"@": "2",
+	"#": "3",
+	"$": "4",
+	"%": "5",
+	"^": "6",
+	"&": "7",
+	"*": "8",
+	"(": "9",
+	")": "0",
+	"{": "[",
+	"}": "]",
+	"\"": "\'",
+	"<": ",",
+	">": ".",
+	"?": "/",
+	"+": "=",
+	"|": "\\",
+	":": ";",
+	"_": "-"
+};
+const specialKeys = ["Enter", "Tab", "Shift", "Meta", "Alt", "Control"];
 let goodWords = "";
 let goodIndex = 0;
 let startTime;
@@ -10074,13 +10146,10 @@ window.addEventListener("keyup", function (e) {
 		console.log(started);
 	}
 	
-	console.log(e.key);
-	
 	if (e.key == "Backspace") {
 		if (goodIndex == 0) {
 			return;
 		}
-
 		const displayGoodWords = document.getElementById("good-words");
 		if (displayGoodWords) {
 			const lastChar = goodWords.slice(-1);
@@ -10090,7 +10159,10 @@ window.addEventListener("keyup", function (e) {
 			const addDisplayWords = displayWords.slice(goodIndex);
 			displayWordsToHtml(addDisplayWords);
 		}
+		return;
+	}
 
+	if (specialKeys.includes(e.key)) {
 		return;
 	}
 
@@ -10111,16 +10183,15 @@ window.addEventListener("keyup", function (e) {
 			}
 		}
 	} else {
-		const keyToHit = displayWords.charAt(goodIndex).toLowerCase();
+		let keyToHit = displayWords.charAt(goodIndex).toLowerCase();
+		if (keyMap.hasOwnProperty(keyToHit)) {
+			keyToHit = keyMap[keyToHit];
+		}
 		const elementToHit = document.getElementById(keyToHit);
-		console.log(keyToHit);
-		console.log(elementToHit);
 		if (elementToHit) {
 			elementToHit.setAttribute("class", "highlight");
-			console.log("added");
 			setTimeout(function() {
 				elementToHit.removeAttribute("class", "highlight");
-				console.log("removed");
 			}, 2000);
 		}
 	}
