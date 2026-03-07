@@ -1,0 +1,17 @@
+.app {
+  background-color: black;
+  min-height: 100vh;
+  margin: 0;
+  padding: 15px;
+}
+
+.title {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title h1 {
+  color: #FFF6DA;
+  font-size: 40px;
+  margin: 20px 0;
+}

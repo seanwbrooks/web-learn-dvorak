@@ -1,0 +1,46 @@
+.keyboard {
+  width: 90%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 3px;
+}
+
+.keyboard-spacer {
+  flex: 1;
+}
+
+.cell {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid #FFF6DA;
+  text-align: center;
+  color: #FFF6DA;
+  font-size: 24px;
+  padding: 15px 2px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.highlight {
+  background-color: #33FFE0 !important;
+  animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

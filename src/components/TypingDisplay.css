@@ -1,0 +1,15 @@
+.typing-display {
+  font-size: 32px;
+  width: 100%;
+  display: inline-block;
+  margin: 20px 0;
+  word-wrap: break-word;
+}
+
+.good-words {
+  color: #A94A4A;
+}
+
+.display-words {
+  color: #FFF6DA;
+}
