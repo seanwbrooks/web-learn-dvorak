@@ -1,17 +1,67 @@
 .app {
-  background-color: black;
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
   min-height: 100vh;
   margin: 0;
-  padding: 15px;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.app::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 246, 218, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+  animation: backgroundMove 20s linear infinite;
+}
+
+@keyframes backgroundMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(30px, 30px);
+  }
 }
 
 .title {
   margin: 0 auto;
   text-align: center;
+  position: relative;
 }
 
 .title h1 {
   color: #FFF6DA;
-  font-size: 40px;
-  margin: 20px 0;
+  font-size: 48px;
+  font-weight: 700;
+  margin: 30px 0;
+  text-shadow: 0 0 20px rgba(255, 246, 218, 0.5),
+               0 0 40px rgba(255, 246, 218, 0.3),
+               0 4px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #FFF6DA 0%, #FFD700 50%, #FFF6DA 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+}
+
+@media (max-width: 768px) {
+  .title h1 {
+    font-size: 32px;
+  }
 }
