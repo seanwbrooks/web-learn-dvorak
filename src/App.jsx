@@ -14,10 +14,30 @@ function App() {
   const [startTime, setStartTime] = useState(null);
   const [wpm, setWpm] = useState(null);
   const [started, setStarted] = useState(false);
+  const [bestScore, setBestScore] = useState(null);
+  const [isComplete, setIsComplete] = useState(false);
+
+  console.log(window.localStorage.getItem('dvorakBestWPM'));
 
   useEffect(() => {
     setDisplayWords(generateDisplayWords(50));
+    // Load best score from localStorage
+    const savedBestScore = window.localStorage.getItem('dvorakBestWPM');
+    if (savedBestScore) {
+      setBestScore(parseInt(savedBestScore, 10));
+    }
   }, []);
+
+  const restartGame = () => {
+    setDisplayWords(generateDisplayWords(50));
+    setGoodWords('');
+    setGoodIndex(0);
+    setHighlightedKey(null);
+    setStartTime(null);
+    setWpm(null);
+    setStarted(false);
+    setIsComplete(false);
+  };
 
   const highlightKey = useCallback((key) => {
     setHighlightedKey(key);
@@ -63,6 +83,25 @@ function App() {
           const elapsedTimeInMins = (endTime - startTime) / 60000;
           const calculatedWpm = Math.round(50 / elapsedTimeInMins);
           setWpm(calculatedWpm);
+          setIsComplete(true);
+          
+          // Update best score if this is better
+          if (!bestScore || calculatedWpm > bestScore) {
+            setBestScore(calculatedWpm);
+            window.localStorage.setItem('dvorakBestWPM', calculatedWpm.toString());
+          }
+          
+          // Store this attempt in history
+          const history = JSON.parse(window.localStorage.getItem('dvorakHistory') || '[]');
+          history.push({
+            wpm: calculatedWpm,
+            date: new Date().toISOString()
+          });
+          // Keep only last 10 attempts
+          if (history.length > 10) {
+            history.shift();
+          }
+          window.localStorage.setItem('dvorakHistory', JSON.stringify(history));
         }
       } else {
         // Highlight the correct key
@@ -76,7 +115,7 @@ function App() {
 
     window.addEventListener('keyup', handleKeyPress);
     return () => window.removeEventListener('keyup', handleKeyPress);
-  }, [displayWords, goodWords, goodIndex, started, startTime, highlightKey]);
+  }, [displayWords, goodWords, goodIndex, started, startTime, highlightKey, bestScore]);
 
   const remainingWords = displayWords.substring(goodIndex);
 
@@ -90,7 +129,12 @@ function App() {
 
       <TypingDisplay goodWords={goodWords} displayWords={remainingWords} />
 
-      <Performance wpm={wpm} />
+      <Performance 
+        wpm={wpm} 
+        bestScore={bestScore} 
+        isComplete={isComplete}
+        onRestart={restartGame}
+      />
     </div>
   );
 }

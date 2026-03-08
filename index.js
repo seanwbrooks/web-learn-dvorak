@@ -10143,7 +10143,6 @@ window.addEventListener("keyup", function (e) {
 	if (!started) {
 		startTime = Date.now();
 		started = true;
-		console.log(started);
 	}
 	
 	if (e.key == "Backspace") {
