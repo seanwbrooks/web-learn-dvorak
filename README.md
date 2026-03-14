@@ -38,3 +38,4 @@ npm run build
 ## Original Version
 
 The original vanilla JavaScript version is available in `index.html` and `index.js`.
+Hosted with GoDaddy learn-dvorak.food domain name and Google Cloud Storage
