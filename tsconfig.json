@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', etc. */,
+    "module": "es2015" /* Specify module code generation: 'None', 'CommonJS', 'AMD', 'System', 'UMD', 'ES6', 'ES2015', 'ESNext', 'NodeNext', 'Bundler'. */,
+    "lib": ["DOM", "es2017"],
+    "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
+    "strict": true /* Enable all strict type-checking options. */,
+    "esModuleInterop": true /* Allow default imports from modules with no default export. */,
+    "skipLibCheck": true /* Skip type checking of declaration files. */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is consistent throughout a file. */,
+    "outDir": "dist" /* Redirect output structure to the directory. */,
+    "rootDir": "src" /* Specify the root directory of source files. */,
+    "noImplicitAny": true,
+    "moduleResolution": "bundler"
+  },
+  "include": [
+    "src/**/*"
+  ] /* Specify an array of file patterns to include in the program. */,
+  "exclude": [
+    "node_modules"
+  ] /* Specify an array of file patterns to exclude from compilation. */
+}
