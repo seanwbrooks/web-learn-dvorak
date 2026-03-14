@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Keyboard from './components/Keyboard'
 import TypingDisplay from './components/TypingDisplay'
 import Performance from './components/Performance'
-import { generateDisplayWords, calculateWPM } from './utils'
+import { generateDisplayWords } from './utils'
 import { keyMap, specialKeys } from './data'
 import './App.css'
 
