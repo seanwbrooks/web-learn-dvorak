@@ -31,9 +31,9 @@ npm run build
 3. Keys will highlight if you press the wrong key
 4. Complete all 50 words to see your WPM score
 5. Color coding indicates:
-   - Green: 60+ WPM
-   - Orange: 40-59 WPM
-   - Red: Below 40 WPM
+    - Green: 60+ WPM
+    - Orange: 40-59 WPM
+    - Red: Below 40 WPM
 
 ## Original Version
 
