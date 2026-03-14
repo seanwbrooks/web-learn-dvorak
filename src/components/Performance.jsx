@@ -56,7 +56,7 @@ function Performance({ wpm, bestScore, badKeys, isComplete, onRestart }) {
                             .slice(0, 5)
                             .map(([key, count]) => (
                                 <li key={key}>
-                                    {key.toUpperCase()}: {count} missed
+                                    {key.toUpperCase()} {count} missed
                                 </li>
                             ))}
                     </ul>
