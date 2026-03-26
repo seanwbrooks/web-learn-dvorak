@@ -39,3 +39,7 @@ npm run build
 
 The original vanilla JavaScript version is available in `index.html` and `index.js`.
 Hosted with GoDaddy learn-dvorak.food domain name and Google Cloud Storage
+
+## Improved Version
+Prettier formatting, typing, typescript linter, React, performance, and AWS SAM
+TODO: 1. Create AWS account 2. Deploy with SAM
