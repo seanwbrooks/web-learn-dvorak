@@ -95,6 +95,16 @@ function Keyboard({ highlightedKey, weakKeys }: KeyboardProps): JSX.Element {
           )}
         </div>
       ))}
+      <div className="keyboard-row">
+        <div className="keyboard-spacer" />
+        <div
+          className={`cell ${highlightedKey === ' ' ? 'highlight' : ''} ${weakKeys.includes(' ') ? 'weak' : ''}`}
+          style={{ backgroundColor: '#FFC300' }}
+        >
+          Space
+        </div>
+        <div className="keyboard-spacer" />
+      </div>
       {weakKeys.length > 0 && (
         <div className="weak-key-legend">
           <span className="weak-key-dot" /> Weak Key (high Miss Rate over your
