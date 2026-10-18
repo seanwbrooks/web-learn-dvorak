@@ -115,8 +115,8 @@ function App() {
             savePersonalBest(calculatedWpm)
           }
 
-          setAttempts(
-            recordAttempt({
+          setAttempts((currentAttempts) =>
+            recordAttempt(currentAttempts, {
               wpm: calculatedWpm,
               date: new Date().toISOString(),
               keys: keyStats,
