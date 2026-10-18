@@ -38,7 +38,7 @@ export function generatePracticePassage(weakKeys: string[], wordCount = 25) {
   const favourWeak = () => Math.random() < PRACTICE_WEIGHT
 
   let passage = ''
-  while (passage.split(' ').length < wordCount) {
+  while (passage.split(' ').length <= wordCount) {
     if (Math.random() < symbolShare) {
       const symbol =
         weakSymbols.length > 0 && favourWeak()
