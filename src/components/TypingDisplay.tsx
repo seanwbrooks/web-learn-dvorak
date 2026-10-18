@@ -2,18 +2,18 @@ import React, { JSX } from 'react'
 import './TypingDisplay.css'
 
 interface TypingDisplayProps {
-  goodWords: string
-  displayWords: string
+  typedPortion: string
+  remainingPassage: string
 }
 
 function TypingDisplay({
-  goodWords,
-  displayWords,
+  typedPortion,
+  remainingPassage,
 }: TypingDisplayProps): JSX.Element {
   return (
     <div className="typing-display">
-      <span className="good-words">{goodWords}</span>
-      <span className="display-words">{displayWords}</span>
+      <span className="typed-portion">{typedPortion}</span>
+      <span className="remaining-passage">{remainingPassage}</span>
     </div>
   )
 }

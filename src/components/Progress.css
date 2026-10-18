@@ -1,0 +1,144 @@
+.progress {
+  --progress-surface: #1a1a2e;
+  --progress-series: #1aa89a;
+  --progress-ink: #fff6da;
+  --progress-ink-secondary: rgba(255, 246, 218, 0.7);
+  --progress-ink-muted: rgba(255, 246, 218, 0.5);
+  --progress-grid: rgba(255, 246, 218, 0.1);
+  --progress-best: rgba(255, 215, 0, 0.7);
+
+  width: 90%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 16px 20px;
+  background: var(--progress-surface);
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  color: var(--progress-ink);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.progress h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.progress-chart {
+  position: relative;
+}
+
+.progress-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.progress-grid {
+  stroke: var(--progress-grid);
+  stroke-width: 1;
+}
+
+.progress-best {
+  stroke: var(--progress-best);
+  stroke-width: 1;
+}
+
+.progress-line {
+  fill: none;
+  stroke: var(--progress-series);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.progress-dot {
+  fill: var(--progress-series);
+  stroke: var(--progress-surface);
+  stroke-width: 2;
+}
+
+.progress-crosshair {
+  stroke: var(--progress-ink-muted);
+  stroke-width: 1;
+}
+
+.progress-tick {
+  fill: var(--progress-ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-label {
+  fill: var(--progress-ink-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.progress-tooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 12px));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  background: #0a0a0f;
+  border: 1px solid var(--progress-grid);
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.progress-tooltip span {
+  color: var(--progress-ink-secondary);
+}
+
+.progress-table {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--progress-ink-secondary);
+}
+
+.progress-table summary {
+  cursor: pointer;
+}
+
+.progress-table table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-table th,
+.progress-table td {
+  padding: 4px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--progress-grid);
+}
+
+.progress-table th:nth-child(2),
+.progress-table td:nth-child(2) {
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .progress {
+    width: 95%;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-tick {
+    font-size: clamp(18px, calc(54px - 7.5vw), 30px);
+  }
+
+  .progress-label {
+    font-size: clamp(19.5px, calc(58.5px - 8.125vw), 32.5px);
+    text-anchor: end;
+  }
+}
