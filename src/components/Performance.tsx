@@ -16,7 +16,7 @@ function Performance({
   isComplete,
   onRestart,
 }: PerformanceProps): JSX.Element | null {
-  if (!wpm) return null
+  if (wpm === null) return null
 
   const getColor = () => {
     if (wpm >= 60) return 'green'
