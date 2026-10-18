@@ -25,7 +25,7 @@ A Test the learner finished, as recorded in their history with its WPM and date.
 _Avoid_: Score, run
 
 **Personal Best**:
-The highest WPM across all of the learner's Attempts.
+The highest WPM across all of the learner's Attempts, excluding Practice Tests.
 _Avoid_: Best score, high score
 
 **WPM**:
