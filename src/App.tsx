@@ -9,7 +9,9 @@ import {
   toPhysicalKey,
 } from './utils'
 import { keyMap, specialKeys } from './data'
+import { findWeakKeys } from './missRate'
 import {
+  loadAttempts,
   loadPersonalBest,
   savePersonalBest,
   recordAttempt,
@@ -29,10 +31,12 @@ function App() {
   const [bestScore, setBestScore] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
   const [missedKeys, setMissedKeys] = useState<Record<string, number>>({})
+  const [weakKeys, setWeakKeys] = useState<string[]>([])
 
   useEffect(() => {
     setDisplayWords(generateDisplayWords(50))
     setBestScore(loadPersonalBest())
+    setWeakKeys(findWeakKeys(loadAttempts()))
   }, [])
 
   const restartGame = () => {
@@ -107,11 +111,12 @@ function App() {
             savePersonalBest(calculatedWpm)
           }
 
-          recordAttempt({
+          const attempts = recordAttempt({
             wpm: calculatedWpm,
             date: new Date().toISOString(),
             keys: keyStats,
           })
+          setWeakKeys(findWeakKeys(attempts))
         }
       } else {
         // Highlight the correct key and count it as a Missed Key
@@ -145,7 +150,7 @@ function App() {
         <h1>Learn Dvorak</h1>
       </div>
 
-      <Keyboard highlightedKey={highlightedKey} />
+      <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
 
       <TypingDisplay goodWords={goodWords} displayWords={remainingWords} />
 

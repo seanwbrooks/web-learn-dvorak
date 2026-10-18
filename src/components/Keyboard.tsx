@@ -3,9 +3,10 @@ import './Keyboard.css'
 
 interface KeyboardProps {
   highlightedKey: string | number | null
+  weakKeys: string[]
 }
 
-function Keyboard({ highlightedKey }: KeyboardProps): JSX.Element {
+function Keyboard({ highlightedKey, weakKeys }: KeyboardProps): JSX.Element {
   const keyboardLayout = [
     [
       { id: '`', display: '` ~', color: '#FFC300' },
@@ -73,7 +74,7 @@ function Keyboard({ highlightedKey }: KeyboardProps): JSX.Element {
             <div
               key={key.id}
               id={key.id}
-              className={`cell ${highlightedKey === key.id ? 'highlight' : ''}`}
+              className={`cell ${highlightedKey === key.id ? 'highlight' : ''} ${weakKeys.includes(key.id) ? 'weak' : ''}`}
               style={{ backgroundColor: key.color }}
             >
               {key.display}
@@ -94,6 +95,12 @@ function Keyboard({ highlightedKey }: KeyboardProps): JSX.Element {
           )}
         </div>
       ))}
+      {weakKeys.length > 0 && (
+        <div className="weak-key-legend">
+          <span className="weak-key-dot" /> Weak Key (high Miss Rate over your
+          last 10 Attempts)
+        </div>
+      )}
     </div>
   )
 }

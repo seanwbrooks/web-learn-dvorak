@@ -40,13 +40,15 @@ export function loadAttempts(): Attempt[] {
   }
 }
 
-export function recordAttempt(attempt: Attempt): void {
+// Returns the learner's history including the new Attempt
+export function recordAttempt(attempt: Attempt): Attempt[] {
   const attempts = [...loadAttempts(), attempt].slice(-MAX_ATTEMPTS)
   try {
     window.localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(attempts))
   } catch {
     // Storage unavailable (private window, blocked site data)
   }
+  return attempts
 }
 
 export function buildKeyStats(
