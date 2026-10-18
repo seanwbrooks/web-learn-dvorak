@@ -7,6 +7,8 @@ const MAX_ATTEMPTS = 50
 export interface KeyStats {
   needed: number
   missed: number
+  // Absent on Attempts recorded before Wrong Keypresses were tracked
+  wrongKeypresses?: number
 }
 
 export interface Attempt {
@@ -56,11 +58,16 @@ export function recordAttempt(
 
 export function buildKeyStats(
   needed: Record<string, number>,
-  missed: Record<string, number>
+  missed: Record<string, number>,
+  wrongKeypresses: Record<string, number>
 ): Record<string, KeyStats> {
   const keys: Record<string, KeyStats> = {}
   for (const [key, count] of Object.entries(needed)) {
-    keys[key] = { needed: count, missed: missed[key] ?? 0 }
+    keys[key] = {
+      needed: count,
+      missed: missed[key] ?? 0,
+      wrongKeypresses: wrongKeypresses[key] ?? 0,
+    }
   }
   return keys
 }
