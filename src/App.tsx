@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Keyboard from './components/Keyboard'
 import TypingDisplay from './components/TypingDisplay'
 import Performance from './components/Performance'
+import Progress from './components/Progress'
 import {
   generateDisplayWords,
   calculateWPM,
@@ -11,6 +12,7 @@ import {
 import { keyMap, specialKeys } from './data'
 import { findWeakKeys } from './missRate'
 import {
+  Attempt,
   loadAttempts,
   loadPersonalBest,
   savePersonalBest,
@@ -31,12 +33,12 @@ function App() {
   const [bestScore, setBestScore] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
   const [missedKeys, setMissedKeys] = useState<Record<string, number>>({})
-  const [weakKeys, setWeakKeys] = useState<string[]>([])
+  const [attempts, setAttempts] = useState<Attempt[]>([])
 
   useEffect(() => {
     setDisplayWords(generateDisplayWords(50))
     setBestScore(loadPersonalBest())
-    setWeakKeys(findWeakKeys(loadAttempts()))
+    setAttempts(loadAttempts())
   }, [])
 
   const restartGame = () => {
@@ -54,6 +56,8 @@ function App() {
     () => buildKeyStats(countKeysNeeded(displayWords), missedKeys),
     [displayWords, missedKeys]
   )
+
+  const weakKeys = useMemo(() => findWeakKeys(attempts), [attempts])
 
   const highlightKey = useCallback((key: keyof typeof keyMap) => {
     setHighlightedKey(key)
@@ -111,12 +115,13 @@ function App() {
             savePersonalBest(calculatedWpm)
           }
 
-          const attempts = recordAttempt({
-            wpm: calculatedWpm,
-            date: new Date().toISOString(),
-            keys: keyStats,
-          })
-          setWeakKeys(findWeakKeys(attempts))
+          setAttempts(
+            recordAttempt({
+              wpm: calculatedWpm,
+              date: new Date().toISOString(),
+              keys: keyStats,
+            })
+          )
         }
       } else {
         // Highlight the correct key and count it as a Missed Key
@@ -161,6 +166,8 @@ function App() {
         isComplete={isComplete}
         onRestart={restartGame}
       />
+
+      {isComplete && <Progress attempts={attempts} personalBest={bestScore} />}
     </div>
   )
 }
