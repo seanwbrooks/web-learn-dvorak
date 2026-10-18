@@ -21,7 +21,7 @@ The part of the Passage the learner has already typed correctly.
 _Avoid_: Good words
 
 **Attempt**:
-A Test the learner finished, as recorded in their history with its WPM, date and per-key Miss Rates. Abandoned Tests are never Attempts.
+A Test the learner finished, as recorded in their history with its WPM and date. Per-key Miss Rates are planned but are not currently recorded. Abandoned Tests are never Attempts.
 _Avoid_: Score, run
 
 **Personal Best**:
