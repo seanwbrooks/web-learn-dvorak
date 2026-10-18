@@ -131,3 +131,14 @@
     padding: 12px;
   }
 }
+
+@media (max-width: 480px) {
+  .progress-tick {
+    font-size: clamp(18px, calc(54px - 7.5vw), 30px);
+  }
+
+  .progress-label {
+    font-size: clamp(19.5px, calc(58.5px - 8.125vw), 32.5px);
+    text-anchor: end;
+  }
+}
