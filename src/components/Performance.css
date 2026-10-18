@@ -73,6 +73,22 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
+.completion-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.graduated-keys {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0;
+  font-size: 20px;
+  color: #fff6da;
+  font-weight: 600;
+}
+
 .restart-button {
   background: linear-gradient(135deg, #4caf50, #45a049);
   color: white;
@@ -124,6 +140,19 @@
   box-shadow:
     0 4px 15px rgba(76, 175, 80, 0.4),
     inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.secondary-button {
+  background: linear-gradient(135deg, #1aa89a, #158a7f);
+  box-shadow:
+    0 6px 20px rgba(26, 168, 154, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+}
+
+.secondary-button:hover {
+  box-shadow:
+    0 8px 25px rgba(26, 168, 154, 0.6),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3);
 }
 
 @keyframes fadeIn {

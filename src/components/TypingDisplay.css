@@ -35,6 +35,18 @@
   opacity: 0.95;
 }
 
+.practice-tag {
+  display: block;
+  width: fit-content;
+  margin-bottom: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #ff4d4d;
+  color: #fff6da;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .typing-display {
     font-size: 24px;

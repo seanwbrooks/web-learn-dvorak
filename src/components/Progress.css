@@ -121,7 +121,9 @@
 }
 
 .progress-table th:nth-child(2),
-.progress-table td:nth-child(2) {
+.progress-table td:nth-child(2),
+.progress-table th:nth-child(3),
+.progress-table td:nth-child(3) {
   text-align: left;
 }
 

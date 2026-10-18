@@ -5,6 +5,7 @@ import Performance from './components/Performance'
 import Progress from './components/Progress'
 import {
   generatePassage,
+  generatePracticePassage,
   calculateWPM,
   countKeysNeeded,
   toPhysicalKey,
@@ -38,6 +39,11 @@ function App() {
     Record<string, number>
   >({})
   const [attempts, setAttempts] = useState<Attempt[]>([])
+  // The Weak Keys a Practice Test targets; null during a normal Test
+  const [practiceKeys, setPracticeKeys] = useState<string[] | null>(null)
+  const [weakKeysBeforeAttempt, setWeakKeysBeforeAttempt] = useState<string[]>(
+    []
+  )
 
   useEffect(() => {
     setPassage(generatePassage(50))
@@ -45,8 +51,9 @@ function App() {
     setAttempts(loadAttempts())
   }, [])
 
-  const restartTest = () => {
-    setPassage(generatePassage(50))
+  const startTest = (newPassage: string, newPracticeKeys: string[] | null) => {
+    setPassage(newPassage)
+    setPracticeKeys(newPracticeKeys)
     setTypedPortion('')
     setTypedIndex(0)
     setHighlightedKey(null)
@@ -67,6 +74,14 @@ function App() {
   }, [passage, missedPositions, wrongKeypresses])
 
   const weakKeys = useMemo(() => findWeakKeys(attempts), [attempts])
+
+  const restartTest = () => startTest(generatePassage(50), null)
+  const startPractice = () =>
+    startTest(generatePracticePassage(weakKeys, 25), weakKeys)
+
+  const graduatedKeys = isComplete
+    ? weakKeysBeforeAttempt.filter((key) => !weakKeys.includes(key))
+    : []
 
   const highlightKey = useCallback((key: keyof typeof keyMap) => {
     setHighlightedKey(key)
@@ -116,10 +131,12 @@ function App() {
             passage.length,
             Date.now() - testStart.getTime()
           )
+          const isPractice = practiceKeys !== null
           setWpm(calculatedWpm)
           setIsComplete(true)
+          setWeakKeysBeforeAttempt(weakKeys)
 
-          if (!personalBest || calculatedWpm > personalBest) {
+          if (!isPractice && (!personalBest || calculatedWpm > personalBest)) {
             setPersonalBest(calculatedWpm)
             savePersonalBest(calculatedWpm)
           }
@@ -129,6 +146,7 @@ function App() {
               wpm: calculatedWpm,
               date: new Date().toISOString(),
               keys: keyStats,
+              ...(isPractice && { practice: true }),
             })
           )
         }
@@ -158,6 +176,8 @@ function App() {
     personalBest,
     isComplete,
     keyStats,
+    practiceKeys,
+    weakKeys,
   ])
 
   const remainingPassage = passage.substring(typedIndex)
@@ -171,6 +191,7 @@ function App() {
       <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
 
       <TypingDisplay
+        practiceKeys={practiceKeys}
         typedPortion={typedPortion}
         remainingPassage={remainingPassage}
       />
@@ -180,10 +201,13 @@ function App() {
         personalBest={personalBest}
         keyStats={keyStats}
         isComplete={isComplete}
+        isPractice={practiceKeys !== null}
+        graduatedKeys={graduatedKeys}
         onRestart={restartTest}
+        onPractice={weakKeys.length > 0 ? startPractice : null}
       />
 
-      {isComplete && (
+      {isComplete && practiceKeys === null && (
         <Progress attempts={attempts} personalBest={personalBest} />
       )}
     </div>
