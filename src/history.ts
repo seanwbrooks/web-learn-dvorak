@@ -15,6 +15,8 @@ export interface Attempt {
   wpm: number
   date: string
   keys: Record<string, KeyStats>
+  // A Practice Test: counts toward Weak Keys, never WPM history or Personal Best
+  practice?: boolean
 }
 
 export function loadPersonalBest(): number | null {

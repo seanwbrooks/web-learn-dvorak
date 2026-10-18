@@ -1,4 +1,5 @@
 import React, { JSX } from 'react'
+import { keyLabel } from '../utils'
 import './Keyboard.css'
 
 interface KeyboardProps {
@@ -110,9 +111,7 @@ function Keyboard({ highlightedKey, weakKeys }: KeyboardProps): JSX.Element {
           <span className="weak-key-dot" aria-hidden="true" />
           <span>
             Weak Key (high Miss Rate over your last 10 Attempts):{' '}
-            {weakKeys
-              .map((key) => (key === ' ' ? 'Space' : key.toUpperCase()))
-              .join(', ')}
+            {weakKeys.map(keyLabel).join(', ')}
           </span>
         </div>
       )}

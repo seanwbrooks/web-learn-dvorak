@@ -9,7 +9,7 @@ One pass through a freshly generated Passage, ending in a WPM result.
 _Avoid_: Game, round, attempt (for the live run)
 
 **Practice Test**:
-A Test whose Passage favours the learner's Weak Keys; it never affects Personal Best.
+A shorter Test whose Passage is weighted toward the learner's Weak Keys. It counts toward Weak Keys but never toward WPM history or Personal Best.
 _Avoid_: Drill, lesson
 
 **Passage**:
@@ -21,7 +21,7 @@ The part of the Passage the learner has already typed correctly.
 _Avoid_: Good words
 
 **Attempt**:
-A Test the learner finished, as recorded in their history with its WPM, date, and per-key Missed Keys and Wrong Keypresses. Abandoned Tests are never Attempts.
+A Test the learner finished, as recorded in their history with its WPM, date, and per-key Missed Keys and Wrong Keypresses. Practice Tests are Attempts too, marked as Practice. Abandoned Tests are never Attempts.
 _Avoid_: Score, run
 
 **Personal Best**:
@@ -47,3 +47,7 @@ _Avoid_: Error rate, accuracy
 **Weak Key**:
 A key with a high Miss Rate across the learner's last 10 Attempts.
 _Avoid_: Problem key, keys to practice
+
+**Graduated Key**:
+A key that was a Weak Key before an Attempt and is no longer one after it.
+_Avoid_: Fixed key, mastered key

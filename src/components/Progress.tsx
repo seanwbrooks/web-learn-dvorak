@@ -31,23 +31,25 @@ function Progress({
 }: ProgressProps): JSX.Element | null {
   const [hovered, setHovered] = useState<number | null>(null)
 
-  if (attempts.length < 2) return null
+  // Practice Tests stay off the WPM line (see GLOSSARY.md, Practice Test)
+  const numbered = attempts.map((attempt, i) => ({ ...attempt, number: i + 1 }))
+  const tests = numbered.filter(({ practice }) => !practice)
+  if (tests.length < 2) return null
 
   const yMax = niceMax(
-    Math.max(personalBest ?? 0, ...attempts.map(({ wpm }) => wpm))
+    Math.max(personalBest ?? 0, ...tests.map(({ wpm }) => wpm))
   )
-  const x = (i: number) => PAD.left + (i / (attempts.length - 1)) * PLOT_W
+  const x = (i: number) => PAD.left + (i / (tests.length - 1)) * PLOT_W
   const y = (wpm: number) => PAD.top + PLOT_H - (wpm / yMax) * PLOT_H
   const ticks = [0, yMax / 2, yMax]
 
-  const path = attempts
+  const path = tests
     .map(({ wpm }, i) => `${i === 0 ? 'M' : 'L'}${x(i)},${y(wpm)}`)
     .join(' ')
-  const last = attempts.length - 1
+  const last = tests.length - 1
   // Skip the end label when it would sit on top of the Personal Best label
   const endLabelCollides =
-    personalBest !== null &&
-    Math.abs(y(attempts[last].wpm) - y(personalBest)) < 14
+    personalBest !== null && Math.abs(y(tests[last].wpm) - y(personalBest)) < 14
 
   const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const box = e.currentTarget.getBoundingClientRect()
@@ -56,16 +58,16 @@ function Progress({
     setHovered(Math.min(last, Math.max(0, i)))
   }
 
-  const hoveredAttempt = hovered === null ? null : attempts[hovered]
+  const hoveredAttempt = hovered === null ? null : tests[hovered]
 
   return (
     <div className="progress">
-      <h3>WPM over your last {attempts.length} Attempts</h3>
+      <h3>WPM over your last {tests.length} Tests</h3>
       <div className="progress-chart">
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           role="img"
-          aria-label={`WPM trend over ${attempts.length} Attempts, latest ${attempts[last].wpm}`}
+          aria-label={`WPM trend over ${tests.length} Tests, latest ${tests[last].wpm}`}
           onPointerMove={onPointerMove}
           onPointerLeave={() => setHovered(null)}
         >
@@ -125,17 +127,17 @@ function Progress({
           <circle
             className="progress-dot"
             cx={x(hovered ?? last)}
-            cy={y(attempts[hovered ?? last].wpm)}
+            cy={y(tests[hovered ?? last].wpm)}
             r={4}
           />
           {hovered === null && !endLabelCollides && (
             <text
               className="progress-label"
               x={x(last) + 8}
-              y={y(attempts[last].wpm)}
+              y={y(tests[last].wpm)}
               dominantBaseline="middle"
             >
-              {attempts[last].wpm}
+              {tests[last].wpm}
             </text>
           )}
 
@@ -145,7 +147,7 @@ function Progress({
             y={HEIGHT - 6}
             textAnchor="start"
           >
-            {formatDate(attempts[0].date)}
+            {formatDate(tests[0].date)}
           </text>
           <text
             className="progress-tick"
@@ -153,7 +155,7 @@ function Progress({
             y={HEIGHT - 6}
             textAnchor="end"
           >
-            {formatDate(attempts[last].date)}
+            {formatDate(tests[last].date)}
           </text>
         </svg>
 
@@ -167,7 +169,8 @@ function Progress({
           >
             <strong>{hoveredAttempt.wpm} WPM</strong>
             <span>
-              Attempt {hovered + 1} · {formatDate(hoveredAttempt.date)}
+              Attempt {hoveredAttempt.number} ·{' '}
+              {formatDate(hoveredAttempt.date)}
             </span>
           </div>
         )}
@@ -180,14 +183,16 @@ function Progress({
             <tr>
               <th>Attempt</th>
               <th>Date</th>
+              <th>Kind</th>
               <th>WPM</th>
             </tr>
           </thead>
           <tbody>
-            {attempts.map((attempt, i) => (
+            {numbered.map((attempt) => (
               <tr key={attempt.date}>
-                <td>{i + 1}</td>
+                <td>{attempt.number}</td>
                 <td>{formatDate(attempt.date)}</td>
+                <td>{attempt.practice ? 'Practice' : 'Test'}</td>
                 <td>{attempt.wpm}</td>
               </tr>
             ))}
