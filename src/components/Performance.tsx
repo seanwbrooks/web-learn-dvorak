@@ -1,10 +1,17 @@
 import React, { JSX } from 'react'
+import { KeyStats } from '../history'
+import { rankByMissRate } from '../missRate'
 import './Performance.css'
+
+// A key must come up this often in the Passage before its Miss Rate is ranked
+const MIN_NEEDED = 3
+
+const keyLabel = (key: string) => (key === ' ' ? 'Space' : key.toUpperCase())
 
 interface PerformanceProps {
   wpm: number | null
   bestScore: number | null
-  badKeys: Record<string, number>
+  badKeys: Record<string, KeyStats>
   isComplete: boolean
   onRestart: () => void
 }
@@ -17,6 +24,11 @@ function Performance({
   onRestart,
 }: PerformanceProps): JSX.Element | null {
   if (wpm === null) return null
+
+  const missedKeys = rankByMissRate(badKeys, {
+    minNeeded: MIN_NEEDED,
+    limit: 5,
+  })
 
   const getColor = () => {
     if (wpm >= 60) return 'green'
@@ -57,20 +69,16 @@ function Performance({
           </button>
         </div>
       )}
-      {badKeys && (
+      {missedKeys.length > 0 && (
         <div className="bad-keys">
           <h3>Keys to Practice:</h3>
           <ul>
-            {Object.entries(badKeys)
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              .filter(([key, count]) => count > 0)
-              .sort((a, b) => b[1] - a[1])
-              .slice(0, 5)
-              .map(([key, count]) => (
-                <li key={key}>
-                  {key.toUpperCase()} {count} missed
-                </li>
-              ))}
+            {missedKeys.map(({ key, missed, needed, missRate }) => (
+              <li key={key}>
+                {keyLabel(key)} {missed} of {needed} missed (
+                {Math.round(missRate * 100)}%)
+              </li>
+            ))}
           </ul>
         </div>
       )}

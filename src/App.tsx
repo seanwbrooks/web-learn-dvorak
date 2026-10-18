@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Keyboard from './components/Keyboard'
 import TypingDisplay from './components/TypingDisplay'
 import Performance from './components/Performance'
@@ -45,6 +45,11 @@ function App() {
     setIsComplete(false)
     setMissedKeys({})
   }
+
+  const keyStats = useMemo(
+    () => buildKeyStats(countKeysNeeded(displayWords), missedKeys),
+    [displayWords, missedKeys]
+  )
 
   const highlightKey = useCallback((key: keyof typeof keyMap) => {
     setHighlightedKey(key)
@@ -105,7 +110,7 @@ function App() {
           recordAttempt({
             wpm: calculatedWpm,
             date: new Date().toISOString(),
-            keys: buildKeyStats(countKeysNeeded(displayWords), missedKeys),
+            keys: keyStats,
           })
         }
       } else {
@@ -129,7 +134,7 @@ function App() {
     highlightKey,
     bestScore,
     isComplete,
-    missedKeys,
+    keyStats,
   ])
 
   const remainingWords = displayWords.substring(goodIndex)
@@ -147,7 +152,7 @@ function App() {
       <Performance
         wpm={wpm}
         bestScore={bestScore}
-        badKeys={missedKeys}
+        badKeys={keyStats}
         isComplete={isComplete}
         onRestart={restartGame}
       />
