@@ -107,8 +107,13 @@ function Keyboard({ highlightedKey, weakKeys }: KeyboardProps): JSX.Element {
       </div>
       {weakKeys.length > 0 && (
         <div className="weak-key-legend">
-          <span className="weak-key-dot" /> Weak Key (high Miss Rate over your
-          last 10 Attempts)
+          <span className="weak-key-dot" aria-hidden="true" />
+          <span>
+            Weak Key (high Miss Rate over your last 10 Attempts):{' '}
+            {weakKeys
+              .map((key) => (key === ' ' ? 'Space' : key.toUpperCase()))
+              .join(', ')}
+          </span>
         </div>
       )}
     </div>
