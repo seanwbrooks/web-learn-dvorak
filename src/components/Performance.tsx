@@ -75,7 +75,7 @@ function Performance({
           <ul>
             {missedKeys.map(({ key, missed, needed, missRate }) => (
               <li key={key}>
-                {keyLabel(key)} {missed} of {needed} missed (
+                {keyLabel(key)} {missed} errors / {needed} required (
                 {Math.round(missRate * 100)}%)
               </li>
             ))}
