@@ -21,7 +21,7 @@ The part of the Passage the learner has already typed correctly.
 _Avoid_: Good words
 
 **Attempt**:
-A Test the learner finished, as recorded in their history with its WPM and date. Per-key Miss Rates are planned but are not currently recorded. Abandoned Tests are never Attempts.
+A Test the learner finished, as recorded in their history with its WPM, date, and per-key Missed Keys and Wrong Keypresses. Abandoned Tests are never Attempts.
 _Avoid_: Score, run
 
 **Personal Best**:
@@ -33,12 +33,16 @@ Words per minute, where a word is any five correctly typed characters (spaces in
 _Avoid_: Speed, score
 
 **Missed Key**:
-The physical Dvorak key the learner should have pressed when they made a wrong keypress; every wrong keypress counts once.
-_Avoid_: Bad key, wrong key
+A position in the Passage where the learner made at least one Wrong Keypress, counted against the physical Dvorak key that position needed.
+_Avoid_: Bad key, error
+
+**Wrong Keypress**:
+A single press of anything other than the character the Passage needed; one Missed Key can have several.
+_Avoid_: Miss, mistake
 
 **Miss Rate**:
-For one key, the number of Missed Keys divided by the number of times that key was needed in the Passage.
-_Avoid_: Error count, accuracy
+For one key, the number of Missed Keys divided by the number of times that key was needed in the Passage; always between 0% and 100%.
+_Avoid_: Error rate, accuracy
 
 **Weak Key**:
 A key with a high Miss Rate across the learner's last 10 Attempts.

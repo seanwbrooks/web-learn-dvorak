@@ -32,7 +32,11 @@ function App() {
   const [wpm, setWpm] = useState<number | null>(null)
   const [personalBest, setPersonalBest] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
-  const [missedKeys, setMissedKeys] = useState<Record<string, number>>({})
+  // Passage positions with at least one Wrong Keypress (each is one Missed Key)
+  const [missedPositions, setMissedPositions] = useState<Set<number>>(new Set())
+  const [wrongKeypresses, setWrongKeypresses] = useState<
+    Record<string, number>
+  >({})
   const [attempts, setAttempts] = useState<Attempt[]>([])
 
   useEffect(() => {
@@ -49,13 +53,18 @@ function App() {
     setStartTime(null)
     setWpm(null)
     setIsComplete(false)
-    setMissedKeys({})
+    setMissedPositions(new Set())
+    setWrongKeypresses({})
   }
 
-  const keyStats = useMemo(
-    () => buildKeyStats(countKeysNeeded(passage), missedKeys),
-    [passage, missedKeys]
-  )
+  const keyStats = useMemo(() => {
+    const missedKeys: Record<string, number> = {}
+    for (const position of missedPositions) {
+      const key = toPhysicalKey(passage.charAt(position))
+      missedKeys[key] = (missedKeys[key] ?? 0) + 1
+    }
+    return buildKeyStats(countKeysNeeded(passage), missedKeys, wrongKeypresses)
+  }, [passage, missedPositions, wrongKeypresses])
 
   const weakKeys = useMemo(() => findWeakKeys(attempts), [attempts])
 
@@ -124,13 +133,17 @@ function App() {
           )
         }
       } else {
-        // Highlight the correct key and count it as a Missed Key
+        // Highlight the correct key; count the Wrong Keypress, and the
+        // position as a Missed Key the first time it goes wrong
         const keyToHit = toPhysicalKey(passage.charAt(typedIndex))
         highlightKey(keyToHit)
-        setMissedKeys((prev) => ({
+        setWrongKeypresses((prev) => ({
           ...prev,
           [keyToHit]: (prev[keyToHit] ?? 0) + 1,
         }))
+        setMissedPositions((prev) =>
+          prev.has(typedIndex) ? prev : new Set(prev).add(typedIndex)
+        )
       }
     }
 
