@@ -1,4 +1,4 @@
-import { words } from './data'
+import { words, keyMap } from './data'
 
 export function generateDisplayWords(wordCount = 50) {
   let displayWords = ''
@@ -31,11 +31,25 @@ function getRandomPunctuation() {
   return punctuation.charAt(randomIndex)
 }
 
-export function calculateWPM(
-  startTime: number,
-  endTime: number,
-  wordCount: number
-): number {
-  const elapsedTimeInMins = (endTime - startTime) / 60000
-  return Math.round(wordCount / elapsedTimeInMins)
+// The physical Dvorak key that produces a character, e.g. 'A' -> 'a', '"' -> "'"
+export function toPhysicalKey(char: string): string {
+  const lower = char.toLowerCase()
+  return keyMap[lower] ?? lower
+}
+
+// How many times each physical key is needed to type the passage
+export function countKeysNeeded(passage: string): Record<string, number> {
+  const needed: Record<string, number> = {}
+  for (const char of passage) {
+    const key = toPhysicalKey(char)
+    needed[key] = (needed[key] ?? 0) + 1
+  }
+  return needed
+}
+
+// Standard WPM: every five correctly typed characters count as one word
+export function calculateWPM(charCount: number, elapsedMs: number): number {
+  const elapsedMins = elapsedMs / 60000
+  if (elapsedMins <= 0) return 0
+  return Math.round(charCount / 5 / elapsedMins)
 }
