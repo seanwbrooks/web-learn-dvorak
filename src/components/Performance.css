@@ -44,7 +44,7 @@
   }
 }
 
-.best-score {
+.personal-best {
   margin-top: 15px;
   font-size: 24px;
   color: #ffd700;
@@ -52,7 +52,7 @@
   font-weight: 600;
 }
 
-.bad-keys {
+.missed-keys {
   margin-top: 15px;
   font-size: 20px;
   color: #ffd700;
@@ -146,7 +146,7 @@
     padding: 15px 30px;
   }
 
-  .best-score {
+  .personal-best {
     font-size: 20px;
   }
 

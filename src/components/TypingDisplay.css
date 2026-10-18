@@ -23,13 +23,13 @@
   max-height: 320px;
 }
 
-.good-words {
+.typed-portion {
   color: #90ee90;
   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
   font-weight: 600;
 }
 
-.display-words {
+.remaining-passage {
   color: #fff6da;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   opacity: 0.95;

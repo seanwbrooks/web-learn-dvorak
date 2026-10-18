@@ -4,7 +4,7 @@ import TypingDisplay from './components/TypingDisplay'
 import Performance from './components/Performance'
 import Progress from './components/Progress'
 import {
-  generateDisplayWords,
+  generatePassage,
   calculateWPM,
   countKeysNeeded,
   toPhysicalKey,
@@ -22,29 +22,29 @@ import {
 import './App.css'
 
 function App() {
-  const [displayWords, setDisplayWords] = useState('')
-  const [goodWords, setGoodWords] = useState('')
-  const [goodIndex, setGoodIndex] = useState(0)
+  const [passage, setPassage] = useState('')
+  const [typedPortion, setTypedPortion] = useState('')
+  const [typedIndex, setTypedIndex] = useState(0)
   const [highlightedKey, setHighlightedKey] = useState<
     keyof typeof keyMap | null
   >(null)
   const [startTime, setStartTime] = useState<Date | null>(null)
   const [wpm, setWpm] = useState<number | null>(null)
-  const [bestScore, setBestScore] = useState<number | null>(null)
+  const [personalBest, setPersonalBest] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
   const [missedKeys, setMissedKeys] = useState<Record<string, number>>({})
   const [attempts, setAttempts] = useState<Attempt[]>([])
 
   useEffect(() => {
-    setDisplayWords(generateDisplayWords(50))
-    setBestScore(loadPersonalBest())
+    setPassage(generatePassage(50))
+    setPersonalBest(loadPersonalBest())
     setAttempts(loadAttempts())
   }, [])
 
-  const restartGame = () => {
-    setDisplayWords(generateDisplayWords(50))
-    setGoodWords('')
-    setGoodIndex(0)
+  const restartTest = () => {
+    setPassage(generatePassage(50))
+    setTypedPortion('')
+    setTypedIndex(0)
     setHighlightedKey(null)
     setStartTime(null)
     setWpm(null)
@@ -53,8 +53,8 @@ function App() {
   }
 
   const keyStats = useMemo(
-    () => buildKeyStats(countKeysNeeded(displayWords), missedKeys),
-    [displayWords, missedKeys]
+    () => buildKeyStats(countKeysNeeded(passage), missedKeys),
+    [passage, missedKeys]
   )
 
   const weakKeys = useMemo(() => findWeakKeys(attempts), [attempts])
@@ -75,11 +75,11 @@ function App() {
 
       // Handle backspace
       if (e.key === 'Backspace') {
-        if (goodIndex === 0) {
+        if (typedIndex === 0) {
           return
         }
-        setGoodIndex((prev) => prev - 1)
-        setGoodWords((prev) => prev.slice(0, -1))
+        setTypedIndex((prev) => prev - 1)
+        setTypedPortion((prev) => prev.slice(0, -1))
         return
       }
 
@@ -89,29 +89,29 @@ function App() {
       }
 
       // Check if the key matches the expected character
-      if (e.key === displayWords.charAt(goodIndex)) {
-        const newGoodWords = goodWords + e.key
-        const newGoodIndex = goodIndex + 1
+      if (e.key === passage.charAt(typedIndex)) {
+        const newTypedPortion = typedPortion + e.key
+        const newTypedIndex = typedIndex + 1
         // Start timing on the first correct character
         const testStart = startTime ?? new Date()
         if (!startTime) {
           setStartTime(testStart)
         }
 
-        setGoodWords(newGoodWords)
-        setGoodIndex(newGoodIndex)
+        setTypedPortion(newTypedPortion)
+        setTypedIndex(newTypedIndex)
 
         // Check if completed
-        if (newGoodIndex >= displayWords.length) {
+        if (newTypedIndex >= passage.length) {
           const calculatedWpm = calculateWPM(
-            displayWords.length,
+            passage.length,
             Date.now() - testStart.getTime()
           )
           setWpm(calculatedWpm)
           setIsComplete(true)
 
-          if (!bestScore || calculatedWpm > bestScore) {
-            setBestScore(calculatedWpm)
+          if (!personalBest || calculatedWpm > personalBest) {
+            setPersonalBest(calculatedWpm)
             savePersonalBest(calculatedWpm)
           }
 
@@ -125,7 +125,7 @@ function App() {
         }
       } else {
         // Highlight the correct key and count it as a Missed Key
-        const keyToHit = toPhysicalKey(displayWords.charAt(goodIndex))
+        const keyToHit = toPhysicalKey(passage.charAt(typedIndex))
         highlightKey(keyToHit)
         setMissedKeys((prev) => ({
           ...prev,
@@ -137,17 +137,17 @@ function App() {
     window.addEventListener('keyup', handleKeyPress)
     return () => window.removeEventListener('keyup', handleKeyPress)
   }, [
-    displayWords,
-    goodWords,
-    goodIndex,
+    passage,
+    typedPortion,
+    typedIndex,
     startTime,
     highlightKey,
-    bestScore,
+    personalBest,
     isComplete,
     keyStats,
   ])
 
-  const remainingWords = displayWords.substring(goodIndex)
+  const remainingPassage = passage.substring(typedIndex)
 
   return (
     <div className="app">
@@ -157,17 +157,22 @@ function App() {
 
       <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
 
-      <TypingDisplay goodWords={goodWords} displayWords={remainingWords} />
+      <TypingDisplay
+        typedPortion={typedPortion}
+        remainingPassage={remainingPassage}
+      />
 
       <Performance
         wpm={wpm}
-        bestScore={bestScore}
-        badKeys={keyStats}
+        personalBest={personalBest}
+        keyStats={keyStats}
         isComplete={isComplete}
-        onRestart={restartGame}
+        onRestart={restartTest}
       />
 
-      {isComplete && <Progress attempts={attempts} personalBest={bestScore} />}
+      {isComplete && (
+        <Progress attempts={attempts} personalBest={personalBest} />
+      )}
     </div>
   )
 }

@@ -1,24 +1,24 @@
 import { words, keyMap } from './data'
 
-export function generateDisplayWords(wordCount = 50) {
-  let displayWords = ''
+export function generatePassage(wordCount = 50) {
+  let passage = ''
 
-  while (displayWords.split(' ').length < wordCount) {
+  while (passage.split(' ').length < wordCount) {
     const wordNumOrPunc = Math.random()
 
     if (wordNumOrPunc < 0.08) {
       const num = getRandomNumber()
-      displayWords += num.toString() + ' '
+      passage += num.toString() + ' '
     } else if (wordNumOrPunc >= 0.08 && wordNumOrPunc < 0.16) {
       const punc = getRandomPunctuation()
-      displayWords += punc
+      passage += punc
     } else if (wordNumOrPunc >= 0.16) {
       const index = Math.floor(Math.random() * words.length)
-      displayWords += words[index] + ' '
+      passage += words[index] + ' '
     }
   }
 
-  return displayWords.trim()
+  return passage.trim()
 }
 
 function getRandomNumber() {

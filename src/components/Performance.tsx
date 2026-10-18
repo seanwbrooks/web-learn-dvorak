@@ -10,22 +10,22 @@ const keyLabel = (key: string) => (key === ' ' ? 'Space' : key.toUpperCase())
 
 interface PerformanceProps {
   wpm: number | null
-  bestScore: number | null
-  badKeys: Record<string, KeyStats>
+  personalBest: number | null
+  keyStats: Record<string, KeyStats>
   isComplete: boolean
   onRestart: () => void
 }
 
 function Performance({
   wpm,
-  bestScore,
-  badKeys,
+  personalBest,
+  keyStats,
   isComplete,
   onRestart,
 }: PerformanceProps): JSX.Element | null {
   if (wpm === null) return null
 
-  const missedKeys = rankByMissRate(badKeys, {
+  const missedKeys = rankByMissRate(keyStats, {
     minNeeded: MIN_NEEDED,
     limit: 5,
   })
@@ -37,10 +37,10 @@ function Performance({
   }
 
   const getMotivationalMessage = () => {
-    if (!bestScore || wpm > bestScore) {
+    if (!personalBest || wpm > personalBest) {
       return '🎉 New Personal Best!'
     }
-    const diff = bestScore - wpm
+    const diff = personalBest - wpm
     if (diff === 0) {
       return '🔥 Tied your best score!'
     }
@@ -50,7 +50,7 @@ function Performance({
     if (diff <= 10) {
       return `⚡ Getting close! ${diff} WPM away from your best!`
     }
-    return `🎯 Your best is ${bestScore} WPM - Keep practicing!`
+    return `🎯 Your best is ${personalBest} WPM - Keep practicing!`
   }
 
   return (
@@ -59,7 +59,9 @@ function Performance({
         {wpm} wpm
       </div>
 
-      {bestScore && <div className="best-score">Best: {bestScore} WPM</div>}
+      {personalBest && (
+        <div className="personal-best">Personal Best: {personalBest} WPM</div>
+      )}
 
       {isComplete && (
         <div className="completion-message">
@@ -70,8 +72,8 @@ function Performance({
         </div>
       )}
       {missedKeys.length > 0 && (
-        <div className="bad-keys">
-          <h3>Keys to Practice:</h3>
+        <div className="missed-keys">
+          <h3>Missed Keys:</h3>
           <ul>
             {missedKeys.map(({ key, missed, needed, missRate }) => (
               <li key={key}>
