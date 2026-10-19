@@ -4,6 +4,9 @@ version = 0.1
 stack_name = "learn-dvorak-app"
 resolve_s3 = true
 s3_prefix = "learn-dvorak-app"
+# CloudFront certificates must live in us-east-1 (docs/adr/0002)
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = ""
+confirm_changeset = false
+# Filled in once the domain is registered in Route 53
+parameter_overrides = "DomainName=REPLACE_ME HostedZoneId=REPLACE_ME"
