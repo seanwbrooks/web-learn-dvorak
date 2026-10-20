@@ -17,17 +17,16 @@
 }
 
 .keyboard-row {
-  display: flex;
-  gap: 6px;
+  /* 15 units x 4 quarter-unit columns; see ROW_UNITS in data.ts. Keys are
+     spaced with margins rather than column-gap so gaps don't stack up inside
+     wide keys. */
+  display: grid;
+  grid-template-columns: repeat(60, minmax(0, 1fr));
   margin-bottom: 6px;
 }
 
-.keyboard-spacer {
-  flex: 0.5;
-}
-
 .cell {
-  flex: 1;
+  margin: 0 3px;
   border-radius: 10px;
   border: 2px solid rgba(255, 246, 218, 0.3);
   text-align: center;
@@ -36,8 +35,7 @@
   font-weight: 600;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   padding: 12px 6px;
-  min-width: 40 8px;
-  min-width: 45px;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,6 +47,11 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.1);
   position: relative;
   user-select: none;
+}
+
+.cell-wide {
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 .cell::before {
@@ -165,11 +168,14 @@
   .cell {
     font-size: 16px;
     padding: 12px 4px;
-    min-width: 35px;
+    margin: 0 2.5px;
+  }
+
+  .cell-wide {
+    font-size: 12px;
   }
 
   .keyboard-row {
-    gap: 5px;
     margin-bottom: 5px;
   }
 }

@@ -1,13 +1,19 @@
 import wordsData from './words-full.json'
 export const words = wordsData
 
-type keyboardLayout = {
+// Key widths are in units (u), where 1u is a standard letter key. Every full
+// row adds up to ROW_UNITS so the keyboard's left and right edges line up;
+// shorter rows (the space bar) are centred.
+export const ROW_UNITS = 15
+
+export type KeyDef = {
   id: string
   display: string
   color: string
-}[][]
+  width?: number
+}
 
-export const keyboardLayout: keyboardLayout = [
+export const keyboardLayout: KeyDef[][] = [
   [
     { id: '`', display: '` ~', color: '#FFC300' },
     { id: '1', display: '1 !', color: '#FFC300' },
@@ -22,8 +28,10 @@ export const keyboardLayout: keyboardLayout = [
     { id: '0', display: '0 )', color: '#FF5733' },
     { id: '[', display: '[ {', color: '#FFC300' },
     { id: ']', display: '] }', color: '#FFC300' },
+    { id: 'Backspace', display: 'Delete', color: '#FFC300', width: 2 },
   ],
   [
+    { id: 'Tab', display: 'Tab', color: '#FFC300', width: 1.5 },
     { id: "'", display: '\' "', color: '#FFC300' },
     { id: ',', display: ', <', color: '#FF5733' },
     { id: '.', display: '. >', color: '#C70039' },
@@ -36,9 +44,10 @@ export const keyboardLayout: keyboardLayout = [
     { id: 'l', display: ' L ', color: '#FFC300' },
     { id: '/', display: '/ ?', color: '#FFC300' },
     { id: '=', display: '= +', color: '#FFC300' },
-    { id: '\\', display: '\\ |', color: '#FFC300' },
+    { id: '\\', display: '\\ |', color: '#FFC300', width: 1.5 },
   ],
   [
+    { id: 'CapsLock', display: 'Caps Lock', color: '#FFC300', width: 1.75 },
     { id: 'a', display: ' A ', color: '#FFC300' },
     { id: 'o', display: ' O ', color: '#FF5733' },
     { id: 'e', display: ' E ', color: '#C70039' },
@@ -50,8 +59,10 @@ export const keyboardLayout: keyboardLayout = [
     { id: 'n', display: ' N ', color: '#FF5733' },
     { id: 's', display: ' S ', color: '#FFC300' },
     { id: '-', display: '- _', color: '#FFC300' },
+    { id: 'Enter', display: 'Return', color: '#FFC300', width: 2.25 },
   ],
   [
+    { id: 'ShiftLeft', display: 'Shift', color: '#FFC300', width: 2.25 },
     { id: ';', display: '; :', color: '#FFC300' },
     { id: 'q', display: ' Q ', color: '#FF5733' },
     { id: 'j', display: ' J ', color: '#C70039' },
@@ -62,7 +73,9 @@ export const keyboardLayout: keyboardLayout = [
     { id: 'w', display: ' W ', color: '#C70039' },
     { id: 'v', display: ' V ', color: '#FF5733' },
     { id: 'z', display: ' Z ', color: '#FFC300' },
+    { id: 'ShiftRight', display: 'Shift', color: '#FFC300', width: 2.75 },
   ],
+  [{ id: ' ', display: 'Space', color: '#FFC300', width: 7 }],
 ]
 
 export const keyMap: { [key: string]: string } = {
