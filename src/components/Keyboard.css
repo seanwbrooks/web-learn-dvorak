@@ -14,6 +14,8 @@
     inset 0 2px 10px rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
+  /* Key labels adapt to the keyboard's own width; see the @container rules. */
+  container-type: inline-size;
 }
 
 .keyboard-row {
@@ -36,6 +38,7 @@
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   padding: 12px 6px;
   min-width: 0;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,9 +52,16 @@
   user-select: none;
 }
 
-.cell-wide {
-  font-size: 15px;
-  white-space: nowrap;
+.key-shift {
+  margin-left: 0.6ch;
+}
+
+.key-compact {
+  display: none;
+  /* The monospace stack draws these arrows from a tiny fallback glyph. */
+  font-family: system-ui, 'Segoe UI Symbol', sans-serif;
+  font-size: 1.5em;
+  line-height: 1;
 }
 
 .cell::before {
@@ -165,17 +175,38 @@
     padding: 15px;
   }
 
+  .keyboard-row {
+    margin-bottom: 5px;
+  }
+}
+
+/* Breakpoints are the keyboard's content width, where 1u = width / 15.
+   Below 900px "Caps Lock" no longer fits in its 1.75u key. */
+@container (max-width: 900px) {
   .cell {
     font-size: 16px;
     padding: 12px 4px;
     margin: 0 2.5px;
   }
 
-  .cell-wide {
-    font-size: 12px;
+  .key-full {
+    display: none;
   }
 
-  .keyboard-row {
-    margin-bottom: 5px;
+  .key-compact {
+    display: inline;
+  }
+}
+
+/* Below 660px a 1u key is too narrow for two characters such as "3 #", so
+   show only the unshifted character and scale the font with the keyboard. */
+@container (max-width: 660px) {
+  .cell {
+    font-size: clamp(10px, 4cqi, 16px);
+    padding: 10px 0;
+  }
+
+  .key-shift {
+    display: none;
   }
 }

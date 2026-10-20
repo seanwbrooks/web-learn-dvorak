@@ -27,13 +27,21 @@ function Keyboard({ highlightedKey, weakKeys }: KeyboardProps): JSX.Element {
             {row.map((key, keyIndex) => (
               <div
                 key={key.id}
-                className={`cell ${keyUnits(key) > 1 ? 'cell-wide' : ''} ${highlightedKey === key.id ? 'highlight' : ''} ${weakKeys.includes(key.id) ? 'weak' : ''}`}
+                className={`cell ${highlightedKey === key.id ? 'highlight' : ''} ${weakKeys.includes(key.id) ? 'weak' : ''}`}
                 style={{
                   backgroundColor: key.color,
                   gridColumn: `${keyIndex === 0 ? toColumns(offset) + 1 : 'auto'} / span ${toColumns(keyUnits(key))}`,
                 }}
               >
-                {key.display}
+                {key.compact ? (
+                  <>
+                    <span className="key-full">{key.display}</span>
+                    <span className="key-compact">{key.compact}</span>
+                  </>
+                ) : (
+                  key.display
+                )}
+                {key.shift && <span className="key-shift">{key.shift}</span>}
               </div>
             ))}
           </div>
