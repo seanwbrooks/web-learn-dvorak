@@ -14,20 +14,21 @@
     inset 0 2px 10px rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
+  /* Key labels adapt to the keyboard's own width; see the @container rules. */
+  container-type: inline-size;
 }
 
 .keyboard-row {
-  display: flex;
-  gap: 6px;
+  /* 15 units x 4 quarter-unit columns; see ROW_UNITS in data.ts. Keys are
+     spaced with margins rather than column-gap so gaps don't stack up inside
+     wide keys. */
+  display: grid;
+  grid-template-columns: repeat(60, minmax(0, 1fr));
   margin-bottom: 6px;
 }
 
-.keyboard-spacer {
-  flex: 0.5;
-}
-
 .cell {
-  flex: 1;
+  margin: 0 3px;
   border-radius: 10px;
   border: 2px solid rgba(255, 246, 218, 0.3);
   text-align: center;
@@ -36,8 +37,8 @@
   font-weight: 600;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   padding: 12px 6px;
-  min-width: 40 8px;
-  min-width: 45px;
+  min-width: 0;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,6 +50,18 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.1);
   position: relative;
   user-select: none;
+}
+
+.key-shift {
+  margin-left: 0.6ch;
+}
+
+.key-compact {
+  display: none;
+  /* The monospace stack draws these arrows from a tiny fallback glyph. */
+  font-family: system-ui, 'Segoe UI Symbol', sans-serif;
+  font-size: 1.5em;
+  line-height: 1;
 }
 
 .cell::before {
@@ -162,14 +175,38 @@
     padding: 15px;
   }
 
+  .keyboard-row {
+    margin-bottom: 5px;
+  }
+}
+
+/* Breakpoints are the keyboard's content width, where 1u = width / 15.
+   Below 900px "Caps Lock" no longer fits in its 1.75u key. */
+@container (max-width: 900px) {
   .cell {
     font-size: 16px;
     padding: 12px 4px;
-    min-width: 35px;
+    margin: 0 2.5px;
   }
 
-  .keyboard-row {
-    gap: 5px;
-    margin-bottom: 5px;
+  .key-full {
+    display: none;
+  }
+
+  .key-compact {
+    display: inline;
+  }
+}
+
+/* Below 660px a 1u key is too narrow for two characters such as "3 #", so
+   show only the unshifted character and scale the font with the keyboard. */
+@container (max-width: 660px) {
+  .cell {
+    font-size: clamp(10px, 4cqi, 16px);
+    padding: 10px 0;
+  }
+
+  .key-shift {
+    display: none;
   }
 }
