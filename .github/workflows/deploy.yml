@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  id-token: write # to assume the AWS role via OIDC
+  contents: read
+
+# Never run two deploys against the stack at once; let a running one finish
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run type
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      # Role is created by github-deploy-role.yaml (see docs/adr/0003)
+      - uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::830550549062:role/learn-dvorak-github-deploy
+          aws-region: us-east-1
+
+      - run: ./deploy.sh

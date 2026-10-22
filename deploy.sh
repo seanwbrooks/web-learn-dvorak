@@ -1,6 +1,7 @@
 #!/bin/bash
 # Build the app, deploy the stack (see docs/adr/0002), upload dist/ and
-# clear CloudFront's cached index.html. Needs an `aws login` session.
+# clear CloudFront's cached index.html. Runs in CI on every push to master
+# (see docs/adr/0003), or locally with an SSO session.
 set -euo pipefail
 
 STACK_NAME=learn-dvorak-app
