@@ -1,29 +1,45 @@
 #!/bin/bash
+# Build the app, deploy the stack (see docs/adr/0002), upload dist/ and
+# clear CloudFront's cached index.html. Needs an `aws login` session.
+set -euo pipefail
 
-# Build the React app
+STACK_NAME=learn-dvorak-app
+REGION=us-east-1
+
+stack_output() {
+  aws cloudformation describe-stacks \
+    --stack-name "$STACK_NAME" \
+    --region "$REGION" \
+    --query "Stacks[0].Outputs[?OutputKey==\`$1\`].OutputValue" \
+    --output text
+}
+
 echo "Building React application..."
 npm run build
 
-# Deploy SAM template
 echo "Deploying SAM template..."
-sam deploy --guided
+sam deploy --no-fail-on-empty-changeset
 
-# Get the bucket name from CloudFormation stack
-BUCKET_NAME=$(aws cloudformation describe-stacks \
-  --stack-name learn-dvorak-app \
-  --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' \
-  --output text)
+BUCKET_NAME=$(stack_output BucketName)
+DISTRIBUTION_ID=$(stack_output DistributionId)
+WEBSITE_URL=$(stack_output WebsiteURL)
 
-# Sync dist folder to S3
-echo "Uploading dist folder to S3 bucket: $BUCKET_NAME"
-aws s3 sync dist/ s3://$BUCKET_NAME/ --delete
+# Hashed assets never change, so browsers and CloudFront can keep them for a
+# year; index.html must be re-checked so new deploys are picked up. No
+# --delete: HTML still cached at the edge or in an open tab may reference the
+# previous build's assets, which are small enough to leave in the bucket
+echo "Uploading dist/ to s3://$BUCKET_NAME..."
+aws s3 sync dist/ "s3://$BUCKET_NAME/" \
+  --exclude index.html \
+  --cache-control "public, max-age=31536000, immutable"
+aws s3 cp dist/index.html "s3://$BUCKET_NAME/index.html" \
+  --cache-control "no-cache"
 
-# TODO: once I have a domain name set up, I can get the CloudFront URL from the stack outputs instead of hardcoding it
-# Get website URL
-# WEBSITE_URL=$(aws cloudformation describe-stacks \
-#  --stack-name learn-dvorak-app \
-#  --query 'Stacks[0].Outputs[?OutputKey==`WebsiteURL`].OutputValue' \
-#  --output text)
+echo "Invalidating cached index.html..."
+aws cloudfront create-invalidation \
+  --distribution-id "$DISTRIBUTION_ID" \
+  --paths "/" "/index.html" \
+  --query 'Invalidation.Id' --output text
 
 echo "Deployment complete!"
 echo "Website URL: $WEBSITE_URL"
