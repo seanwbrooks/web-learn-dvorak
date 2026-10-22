@@ -25,9 +25,11 @@ DISTRIBUTION_ID=$(stack_output DistributionId)
 WEBSITE_URL=$(stack_output WebsiteURL)
 
 # Hashed assets never change, so browsers and CloudFront can keep them for a
-# year; index.html must be re-checked so new deploys are picked up
+# year; index.html must be re-checked so new deploys are picked up. No
+# --delete: HTML still cached at the edge or in an open tab may reference the
+# previous build's assets, which are small enough to leave in the bucket
 echo "Uploading dist/ to s3://$BUCKET_NAME..."
-aws s3 sync dist/ "s3://$BUCKET_NAME/" --delete \
+aws s3 sync dist/ "s3://$BUCKET_NAME/" \
   --exclude index.html \
   --cache-control "public, max-age=31536000, immutable"
 aws s3 cp dist/index.html "s3://$BUCKET_NAME/index.html" \

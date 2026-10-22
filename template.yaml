@@ -84,8 +84,14 @@ Resources:
           if (request.headers.host.value.startsWith('www.')) {
             var query = Object.keys(request.querystring)
               .map(function (key) {
+                // Repeated keys (?tag=a&tag=b) arrive in multiValue
                 var param = request.querystring[key];
-                return param.value === '' ? key : key + '=' + param.value;
+                var params = param.multiValue || [param];
+                return params
+                  .map(function (p) {
+                    return p.value === '' ? key : key + '=' + p.value;
+                  })
+                  .join('&');
               })
               .join('&');
             return {
