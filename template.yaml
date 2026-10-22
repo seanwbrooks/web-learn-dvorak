@@ -8,7 +8,7 @@ Parameters:
     Description: Apex domain the app is served on, e.g. learndvorak.com
   HostedZoneId:
     Type: AWS::Route53::HostedZone::Id
-    Description: Route 53 hosted zone created when the domain was registered
+    Description: Route 53 hosted zone the registrar delegates the domain to
 
 Resources:
   WebsiteBucket:
