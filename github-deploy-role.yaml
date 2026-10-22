@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Learn Dvorak - role GitHub Actions assumes to run deploy.sh (see docs/adr/0003)
+
+# Deployed once by hand, separately from template.yaml, so the workflow can
+# never change its own permissions:
+#   aws cloudformation deploy --template-file github-deploy-role.yaml \
+#     --stack-name learn-dvorak-github-deploy --capabilities CAPABILITY_NAMED_IAM
+
+Parameters:
+  Repository:
+    Type: String
+    Default: seanwbrooks/web-learn-dvorak
+  Branch:
+    Type: String
+    Default: master
+  AppStackName:
+    Type: String
+    Default: learn-dvorak-app
+  HostedZoneId:
+    Type: AWS::Route53::HostedZone::Id
+    Default: Z057914128MXPILW6AYEP
+
+Resources:
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: learn-dvorak-github-deploy
+      MaxSessionDuration: 3600
+      # Only workflow runs on the deploy branch of this repo get credentials
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubOidcProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${Repository}:ref:refs/heads/${Branch}'
+      Policies:
+        - PolicyName: deploy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: AppStack
+                Effect: Allow
+                Action:
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:DeleteChangeSet
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:DescribeStacks
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:DescribeStackResources
+                  - cloudformation:GetTemplate
+                  - cloudformation:GetTemplateSummary
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AppStackName}/*'
+                  - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/aws-sam-cli-managed-default/*'
+                  - !Sub 'arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31'
+              - Sid: TemplateChecks
+                Effect: Allow
+                Action:
+                  - cloudformation:GetTemplateSummary
+                  - cloudformation:ValidateTemplate
+                Resource: '*'
+              # resolve_s3 uploads the packaged template to SAM's managed bucket
+              - Sid: SamArtifacts
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                Resource:
+                  - arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*
+                  - arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*/*
+              # CloudFormation acts with these credentials, so the role also
+              # needs what template.yaml creates. Bucket names are generated
+              # from the stack name.
+              - Sid: WebsiteBucket
+                Effect: Allow
+                Action: s3:*
+                Resource:
+                  - !Sub 'arn:aws:s3:::${AppStackName}-*'
+                  - !Sub 'arn:aws:s3:::${AppStackName}-*/*'
+              - Sid: CloudFront
+                Effect: Allow
+                Action: cloudfront:*
+                Resource: '*'
+              - Sid: Certificate
+                Effect: Allow
+                Action: acm:*
+                Resource: '*'
+              - Sid: Dns
+                Effect: Allow
+                Action:
+                  - route53:GetHostedZone
+                  - route53:ListResourceRecordSets
+                  - route53:ChangeResourceRecordSets
+                Resource: !Sub 'arn:aws:route53:::hostedzone/${HostedZoneId}'
+              - Sid: DnsChanges
+                Effect: Allow
+                Action:
+                  - route53:GetChange
+                  - route53:ListHostedZones
+                  - route53:ListHostedZonesByName
+                Resource: '*'
+
+Outputs:
+  DeployRoleArn:
+    Description: role-to-assume for .github/workflows/deploy.yml
+    Value: !GetAtt DeployRole.Arn
