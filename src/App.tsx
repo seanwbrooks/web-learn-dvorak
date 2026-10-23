@@ -3,6 +3,7 @@ import Keyboard from './components/Keyboard'
 import TypingDisplay from './components/TypingDisplay'
 import Performance from './components/Performance'
 import Progress from './components/Progress'
+import IntroModal from './components/IntroModal'
 import {
   generatePassage,
   generatePracticePassage,
@@ -16,6 +17,8 @@ import {
   Attempt,
   loadAttempts,
   loadPersonalBest,
+  loadIntroSeen,
+  saveIntroSeen,
   savePersonalBest,
   recordAttempt,
   buildKeyStats,
@@ -39,6 +42,7 @@ function App() {
     Record<string, number>
   >({})
   const [attempts, setAttempts] = useState<Attempt[]>([])
+  const [introOpen, setIntroOpen] = useState(() => !loadIntroSeen())
   // The Weak Keys a Practice Test targets; null during a normal Test
   const [practiceKeys, setPracticeKeys] = useState<string[] | null>(null)
 
@@ -85,8 +89,8 @@ function App() {
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // The Test is over; only restarting starts a new one
-      if (isComplete) {
+      // The Test is over, or the intro is covering it
+      if (isComplete || introOpen) {
         return
       }
 
@@ -169,12 +173,29 @@ function App() {
     isComplete,
     keyStats,
     practiceKeys,
+    introOpen,
   ])
 
   const remainingPassage = passage.substring(typedIndex)
 
   return (
     <div className="app">
+      <button
+        type="button"
+        className="intro-open"
+        aria-label="How to play"
+        title="How to play"
+        onClick={() => setIntroOpen(true)}
+      >
+        ?
+      </button>
+      <IntroModal
+        open={introOpen}
+        onClose={() => {
+          setIntroOpen(false)
+          saveIntroSeen()
+        }}
+      />
       <div className="app-content">
         <div className="title">
           <h1>Learn Dvorak</h1>
