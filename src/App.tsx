@@ -185,7 +185,12 @@ function App() {
         className="intro-open"
         aria-label="How to play"
         title="How to play"
-        onClick={() => setIntroOpen(true)}
+        onClick={(e) => {
+          // Otherwise the dialog hands focus back here on close, and the
+          // next Space or Enter typed into the Passage reopens it
+          e.currentTarget.blur()
+          setIntroOpen(true)
+        }}
       >
         ?
       </button>
