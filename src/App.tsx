@@ -175,30 +175,37 @@ function App() {
 
   return (
     <div className="app">
-      <div className="title">
-        <h1>Learn Dvorak</h1>
+      <div className="app-content">
+        <div className="title">
+          <h1>Learn Dvorak</h1>
+        </div>
+
+        {/* Results take the finished Passage's place, so the page fits one
+            screen with the keyboard (and its Weak Keys) still in view */}
+        {isComplete ? (
+          <>
+            <Performance
+              wpm={wpm}
+              personalBest={personalBest}
+              isComplete={isComplete}
+              isPractice={practiceKeys !== null}
+              onRestart={restartTest}
+              onPractice={weakKeys.length > 0 ? startPractice : null}
+            />
+            {practiceKeys === null && (
+              <Progress attempts={attempts} personalBest={personalBest} />
+            )}
+          </>
+        ) : (
+          <TypingDisplay
+            practiceKeys={practiceKeys}
+            typedPortion={typedPortion}
+            remainingPassage={remainingPassage}
+          />
+        )}
+
+        <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
       </div>
-
-      <TypingDisplay
-        practiceKeys={practiceKeys}
-        typedPortion={typedPortion}
-        remainingPassage={remainingPassage}
-      />
-
-      <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
-
-      <Performance
-        wpm={wpm}
-        personalBest={personalBest}
-        isComplete={isComplete}
-        isPractice={practiceKeys !== null}
-        onRestart={restartTest}
-        onPractice={weakKeys.length > 0 ? startPractice : null}
-      />
-
-      {isComplete && practiceKeys === null && (
-        <Progress attempts={attempts} personalBest={personalBest} />
-      )}
     </div>
   )
 }
