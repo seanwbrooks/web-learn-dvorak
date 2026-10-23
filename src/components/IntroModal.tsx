@@ -6,7 +6,7 @@ interface IntroModalProps {
   onClose: () => void
 }
 
-// Why the site exists and how to play. Shown on a first visit and from the
+// How to play. Shown on a first visit and from the
 // "How to play" button; a native <dialog> handles focus, Escape and the backdrop.
 function IntroModal({ open, onClose }: IntroModalProps): JSX.Element {
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -43,16 +43,6 @@ function IntroModal({ open, onClose }: IntroModalProps): JSX.Element {
         </button>
 
         <h2 id="intro-title">Welcome to Learn Dvorak</h2>
-
-        <section>
-          <h3>Why this site exists</h3>
-          <p>
-            I built Learn Dvorak to help me type faster on an ergonomic,
-            efficient keyboard layout. Dvorak puts the letters you type most on
-            the home row, so your fingers travel less than they do on QWERTY.
-            This is the practice tool I wanted while learning it.
-          </p>
-        </section>
 
         <section>
           <h3>How to play</h3>
