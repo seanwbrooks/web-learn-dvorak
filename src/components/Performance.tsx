@@ -37,9 +37,9 @@ function Performance({
   })
 
   const getColor = () => {
-    if (wpm >= 60) return 'green'
-    if (wpm >= 40) return 'orange'
-    return 'red'
+    if (wpm >= 60) return 'var(--wpm-fast)'
+    if (wpm >= 40) return 'var(--wpm-steady)'
+    return 'var(--wpm-slow)'
   }
 
   const getMotivationalMessage = () => {

@@ -29,7 +29,7 @@ function Keyboard({ highlightedKey, weakKeys }: KeyboardProps): JSX.Element {
                 key={key.id}
                 className={`cell ${highlightedKey === key.id ? 'highlight' : ''} ${weakKeys.includes(key.id) ? 'weak' : ''}`}
                 style={{
-                  backgroundColor: key.color,
+                  backgroundColor: `var(--finger-${key.finger})`,
                   gridColumn: `${keyIndex === 0 ? toColumns(offset) + 1 : 'auto'} / span ${toColumns(keyUnits(key))}`,
                 }}
               >
