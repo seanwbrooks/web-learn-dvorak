@@ -22,6 +22,11 @@ npm run dev
 
 # Build for production
 npm run build
+
+# Checks that run before every deploy
+npm run lint
+npm run type
+npm run prettier:check   # npm run prettier to fix
 ```
 
 ## Usage
@@ -35,11 +40,21 @@ npm run build
    - Orange: 40-59 WPM
    - Red: Below 40 WPM
 
+## Hosting
+
+Live at [learndvorak.com](https://learndvorak.com), served by CloudFront from a private S3 bucket with an ACM certificate. The domain is registered at GoDaddy and its DNS is hosted in Route 53. `template.yaml` defines the stack; see [ADR 0002](docs/adr/0002-cloudfront-private-s3-route53.md).
+
+## Deployment
+
+Every push to `master` runs `.github/workflows/deploy.yml`: lint, type-check, Prettier, then `./deploy.sh`, which builds the app, deploys the stack with SAM, uploads `dist/` and invalidates the cached `index.html`. The workflow signs in to AWS through GitHub OIDC with the role in `github-deploy-role.yaml`, a separate stack deployed by hand; see [ADR 0003](docs/adr/0003-deploy-from-github-actions.md).
+
+To deploy from your machine instead:
+
+```bash
+aws sso login --sso-session admin
+./deploy.sh
+```
+
 ## Original Version
 
-The original vanilla JavaScript version is available in `index.html` and `index.js`.
-Hosted with GoDaddy learn-dvorak.food domain name and Google Cloud Storage
-
-## Improved Version
-Prettier formatting, typing, typescript linter, React, performance, and AWS SAM
-TODO: 1. Create AWS account 2. Deploy with SAM
+The first version was vanilla JavaScript, hosted on Google Cloud Storage at learn-dvorak.food. It was replaced by this React app in `5e7cc3b` and is still in the git history.

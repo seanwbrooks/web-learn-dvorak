@@ -28,6 +28,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run type
+      - run: npm run prettier:check
 
       - uses: aws-actions/setup-sam@v2
         with:
