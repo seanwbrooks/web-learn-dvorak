@@ -1,4 +1,5 @@
 import React, { JSX, useEffect, useRef } from 'react'
+import './Button.css'
 import './IntroModal.css'
 
 interface IntroModalProps {
@@ -7,7 +8,7 @@ interface IntroModalProps {
 }
 
 // How to play. Shown on a first visit and from the
-// "How to play" button; a native <dialog> handles focus, Escape and the backdrop.
+// nav bar's "How to play" button; a native <dialog> handles focus, Escape and the backdrop.
 function IntroModal({ open, onClose }: IntroModalProps): JSX.Element {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const startRef = useRef<HTMLButtonElement>(null)

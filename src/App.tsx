@@ -4,6 +4,7 @@ import TypingDisplay from './components/TypingDisplay'
 import Performance from './components/Performance'
 import Progress from './components/Progress'
 import IntroModal from './components/IntroModal'
+import NavBar from './components/NavBar'
 import {
   generatePassage,
   generatePracticePassage,
@@ -180,20 +181,6 @@ function App() {
 
   return (
     <div className="app">
-      <button
-        type="button"
-        className="intro-open"
-        aria-label="How to play"
-        title="How to play"
-        onClick={(e) => {
-          // Otherwise the dialog hands focus back here on close, and the
-          // next Space or Enter typed into the Passage reopens it
-          e.currentTarget.blur()
-          setIntroOpen(true)
-        }}
-      >
-        ?
-      </button>
       <IntroModal
         open={introOpen}
         onClose={() => {
@@ -202,9 +189,7 @@ function App() {
         }}
       />
       <div className="app-content">
-        <div className="title">
-          <h1>Learn Dvorak</h1>
-        </div>
+        <NavBar current="home" onHelp={() => setIntroOpen(true)} />
 
         {/* Results take the finished Passage's place, so the page fits one
             screen with the keyboard (and its Weak Keys) still in view */}

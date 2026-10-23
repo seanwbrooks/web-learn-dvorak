@@ -88,8 +88,7 @@
 }
 
 .intro-close:focus-visible,
-.intro-start:focus-visible,
-.intro-open:focus-visible {
+.intro-start:focus-visible {
   outline: 2px solid var(--key-target);
   outline-offset: 2px;
 }
@@ -99,25 +98,4 @@
   margin-top: var(--space-1);
   padding: var(--space-3) var(--space-8);
   font-size: var(--text-lg);
-}
-
-/* Reopens the dialog; sits in the page border so it costs no height */
-.intro-open {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-5);
-  z-index: 1;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  background: var(--panel);
-  color: var(--ink);
-  font-size: var(--text-xl);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.intro-open:hover {
-  border-color: var(--ink-muted);
 }

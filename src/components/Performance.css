@@ -64,72 +64,6 @@
   gap: var(--space-4);
 }
 
-/* Each button sets its own colour pair; glows are derived from the first */
-.restart-button {
-  --button-color: var(--action-primary);
-  --button-color-end: var(--action-primary-end);
-
-  background: linear-gradient(
-    135deg,
-    var(--button-color),
-    var(--button-color-end)
-  );
-  color: var(--on-action);
-  border: none;
-  padding: var(--space-4) var(--space-10);
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  box-shadow:
-    0 6px 20px color-mix(in srgb, var(--button-color) 40%, transparent),
-    inset 0 2px 5px rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  overflow: hidden;
-}
-
-.restart-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.restart-button:hover::before {
-  left: 100%;
-}
-
-.restart-button:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 8px 25px color-mix(in srgb, var(--button-color) 60%, transparent),
-    inset 0 2px 5px rgba(255, 255, 255, 0.3);
-}
-
-.restart-button:active {
-  transform: translateY(1px);
-  box-shadow:
-    0 4px 15px color-mix(in srgb, var(--button-color) 40%, transparent),
-    inset 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.secondary-button {
-  --button-color: var(--action-secondary);
-  --button-color-end: var(--action-secondary-end);
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -147,11 +81,6 @@
   }
 
   .personal-best {
-    font-size: var(--text-xl);
-  }
-
-  .restart-button {
-    padding: var(--space-3) var(--space-8);
     font-size: var(--text-xl);
   }
 }

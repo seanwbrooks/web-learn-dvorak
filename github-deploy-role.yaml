@@ -28,6 +28,26 @@ Resources:
       ClientIdList:
         - sts.amazonaws.com
 
+  # The most any role the app stack creates may ever do: write Contact
+  # messages and its own logs. The deploy role can only create roles that
+  # carry this boundary, so it can't mint a more powerful role for itself.
+  LambdaBoundary:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: learn-dvorak-lambda-boundary
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: dynamodb:PutItem
+            Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppStackName}-*'
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AppStackName}-*'
+
   DeployRole:
     Type: AWS::IAM::Role
     Properties:
@@ -107,6 +127,58 @@ Resources:
                   - route53:ListResourceRecordSets
                   - route53:ChangeResourceRecordSets
                 Resource: !Sub 'arn:aws:route53:::hostedzone/${HostedZoneId}'
+              - Sid: ContactTable
+                Effect: Allow
+                Action: dynamodb:*
+                Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppStackName}-*'
+              - Sid: ContactFunction
+                Effect: Allow
+                Action: lambda:*
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AppStackName}-*'
+              - Sid: ContactApi
+                Effect: Allow
+                Action:
+                  - apigateway:GET
+                  - apigateway:POST
+                  - apigateway:PUT
+                  - apigateway:PATCH
+                  - apigateway:DELETE
+                Resource:
+                  - !Sub 'arn:aws:apigateway:${AWS::Region}::/apis'
+                  - !Sub 'arn:aws:apigateway:${AWS::Region}::/apis/*'
+                  - !Sub 'arn:aws:apigateway:${AWS::Region}::/tags/*'
+              # Roles for the app's functions, only ever with LambdaBoundary
+              - Sid: FunctionRolesWithBoundary
+                Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:PutRolePolicy
+                  - iam:AttachRolePolicy
+                  - iam:DetachRolePolicy
+                  - iam:DeleteRolePolicy
+                  - iam:PutRolePermissionsBoundary
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/${AppStackName}-*'
+                Condition:
+                  StringEquals:
+                    iam:PermissionsBoundary: !Ref LambdaBoundary
+              - Sid: FunctionRoles
+                Effect: Allow
+                Action:
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:DeleteRole
+                  - iam:ListRolePolicies
+                  - iam:ListAttachedRolePolicies
+                  - iam:TagRole
+                  - iam:UntagRole
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/${AppStackName}-*'
+              - Sid: PassFunctionRolesToLambda
+                Effect: Allow
+                Action: iam:PassRole
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/${AppStackName}-*'
+                Condition:
+                  StringEquals:
+                    iam:PassedToService: lambda.amazonaws.com
               - Sid: DnsChanges
                 Effect: Allow
                 Action:

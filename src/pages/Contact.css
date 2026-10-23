@@ -1,0 +1,93 @@
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 640px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.field label {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-0);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.5;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+.field input:hover,
+.field textarea:hover {
+  border-color: var(--ink-muted);
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--key-target);
+}
+
+/* Off-screen rather than display: none, which some bots skip */
+.field-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.contact-actions .page-action {
+  align-self: auto;
+}
+
+.contact-actions .restart-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.contact-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--typed);
+}
+
+.contact-status:has(.weak-key-dot) {
+  color: var(--ink);
+}
+
+/* The Weak Key dot from the keyboard, reused to mark a failed send */
+.contact-status .weak-key-dot {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--weak-key);
+  box-shadow: 0 0 6px var(--weak-key);
+}
