@@ -1,8 +1,8 @@
-/* Design tokens. The single source for colours, type, spacing, radii and
-   shadows; component CSS refers to these instead of literal values. Mirrored
-   in the Learn Dvorak design system artifact (see README.md). Glows and
-   tints are derived from these with color-mix() rather than given their own
-   token. */
+/* Design tokens: the shared colours, type, spacing, radii and shadows that
+   component CSS uses wherever the design repeats a value; one-off details
+   stay local. Mirrored in the Learn Dvorak design system artifact (see
+   README.md). Glows and tints are derived from these with color-mix() rather
+   than given their own token. */
 :root {
   /* Ground: the app's background gradient runs bg-0 → bg-1 → bg-2 */
   --bg-0: #0a0a0f;
