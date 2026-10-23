@@ -27,6 +27,12 @@
   --finger-middle: #c70039;
   --finger-index-left: #900c3f;
   --finger-index-right: #581845;
+  /* Key labels: dark on the two light zones, cream on the rest (4.5:1 or more) */
+  --on-finger-pinky: var(--bg-1);
+  --on-finger-ring: var(--bg-1);
+  --on-finger-middle: var(--ink);
+  --on-finger-index-left: var(--ink);
+  --on-finger-index-right: var(--ink);
 
   /* Learner state */
   --key-target: #33ffe0;
@@ -36,20 +42,20 @@
   --typed: #90ee90;
   --personal-best: #ffd700;
 
-  /* Actions */
-  --action-primary: #4caf50;
-  --action-primary-end: #45a049;
-  --action-secondary: #1aa89a;
-  --action-secondary-end: #158a7f;
+  /* Actions: dark enough that on-action reads 4.5:1 across the gradient */
+  --action-primary: #3a863d;
+  --action-primary-end: #337736;
+  --action-secondary: #15857a;
+  --action-secondary-end: #10675f;
   --on-action: #ffffff;
 
   /* WPM result, by speed: 60+, 40–59, under 40 */
-  --wpm-fast: var(--action-primary);
+  --wpm-fast: #4caf50;
   --wpm-steady: #ffa500;
   --wpm-slow: var(--weak-key);
 
   /* Progress chart */
-  --chart-series: var(--action-secondary);
+  --chart-series: #1aa89a;
   --chart-best: rgba(255, 215, 0, 0.7);
 
   /* Type */
