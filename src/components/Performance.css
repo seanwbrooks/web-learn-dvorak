@@ -1,9 +1,15 @@
 .performance {
+  /* WPM, Personal Best and the buttons share one row, wrapping when narrow */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4) var(--space-6);
   font-size: var(--text-4xl);
   padding: var(--space-3);
   text-align: center;
   max-width: 1200px;
-  margin: var(--space-3) auto;
+  margin: 0 auto;
   flex-shrink: 0;
 }
 
@@ -40,7 +46,6 @@
 }
 
 .personal-best {
-  margin-top: var(--space-4);
   font-size: var(--text-2xl);
   color: var(--personal-best);
   text-shadow: 0 0 15px
@@ -49,7 +54,6 @@
 }
 
 .completion-message {
-  margin-top: var(--space-8);
   animation: fadeIn 0.5s ease-in;
 }
 

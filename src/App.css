@@ -16,6 +16,25 @@
   box-sizing: border-box;
 }
 
+.app-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* On wider screens, wide page borders and the whole UI at 75%, so a Test
+   and its results each fit one laptop screen. The borders sit outside the
+   zoom so they keep their full size. */
+@media (min-width: 769px) {
+  .app {
+    padding: var(--space-6) var(--space-10);
+  }
+
+  .app-content {
+    zoom: 0.75;
+  }
+}
+
 .app::before {
   content: '';
   position: fixed;
@@ -52,7 +71,7 @@
   color: var(--ink);
   font-size: var(--text-5xl);
   font-weight: 700;
-  margin: var(--space-8) 0;
+  margin: var(--space-5) 0;
   text-shadow:
     0 0 20px color-mix(in srgb, var(--ink) 50%, transparent),
     0 0 40px color-mix(in srgb, var(--ink) 30%, transparent),
