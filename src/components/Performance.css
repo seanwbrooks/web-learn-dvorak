@@ -48,26 +48,9 @@
   font-weight: 600;
 }
 
-.missed-keys {
-  margin-top: var(--space-4);
-  font-size: var(--text-xl);
-  color: var(--personal-best);
-  text-shadow: 0 0 10px
-    color-mix(in srgb, var(--personal-best) 50%, transparent);
-  font-weight: 600;
-}
-
 .completion-message {
   margin-top: var(--space-8);
   animation: fadeIn 0.5s ease-in;
-}
-
-.motivational-message {
-  font-size: var(--text-3xl);
-  color: var(--ink);
-  margin-bottom: var(--space-5);
-  font-weight: 600;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .completion-buttons {
@@ -169,10 +152,6 @@
   }
 
   .personal-best {
-    font-size: var(--text-xl);
-  }
-
-  .motivational-message {
     font-size: var(--text-xl);
   }
 

@@ -1,16 +1,10 @@
 import React, { JSX } from 'react'
-import { KeyStats } from '../history'
-import { rankByMissRate } from '../missRate'
 import { keyLabel } from '../utils'
 import './Performance.css'
-
-// A key must come up this often in the Passage before its Miss Rate is ranked
-const MIN_NEEDED = 3
 
 interface PerformanceProps {
   wpm: number | null
   personalBest: number | null
-  keyStats: Record<string, KeyStats>
   isComplete: boolean
   isPractice: boolean
   graduatedKeys: string[]
@@ -22,7 +16,6 @@ interface PerformanceProps {
 function Performance({
   wpm,
   personalBest,
-  keyStats,
   isComplete,
   isPractice,
   graduatedKeys,
@@ -31,32 +24,10 @@ function Performance({
 }: PerformanceProps): JSX.Element | null {
   if (wpm === null) return null
 
-  const missedKeys = rankByMissRate(keyStats, {
-    minNeeded: MIN_NEEDED,
-    limit: 5,
-  })
-
   const getColor = () => {
     if (wpm >= 60) return 'var(--wpm-fast)'
     if (wpm >= 40) return 'var(--wpm-steady)'
     return 'var(--wpm-slow)'
-  }
-
-  const getMotivationalMessage = () => {
-    if (!personalBest || wpm > personalBest) {
-      return '🎉 New Personal Best!'
-    }
-    const diff = personalBest - wpm
-    if (diff === 0) {
-      return '🔥 Tied your best score!'
-    }
-    if (diff <= 5) {
-      return `💪 Almost there! Just ${diff} WPM to beat your best!`
-    }
-    if (diff <= 10) {
-      return `⚡ Getting close! ${diff} WPM away from your best!`
-    }
-    return `🎯 Your best is ${personalBest} WPM - Keep practicing!`
   }
 
   return (
@@ -80,11 +51,6 @@ function Performance({
 
       {isComplete && (
         <div className="completion-message">
-          {!isPractice && (
-            <div className="motivational-message">
-              {getMotivationalMessage()}
-            </div>
-          )}
           <div className="completion-buttons">
             {isPractice ? (
               <>
@@ -116,19 +82,6 @@ function Performance({
               </>
             )}
           </div>
-        </div>
-      )}
-      {missedKeys.length > 0 && (
-        <div className="missed-keys">
-          <h3>Missed Keys:</h3>
-          <ul>
-            {missedKeys.map(({ key, missed, needed, missRate }) => (
-              <li key={key}>
-                {keyLabel(key)} {missed} of {needed} missed (
-                {Math.round(missRate * 100)}%)
-              </li>
-            ))}
-          </ul>
         </div>
       )}
     </div>

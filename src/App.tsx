@@ -199,7 +199,6 @@ function App() {
       <Performance
         wpm={wpm}
         personalBest={personalBest}
-        keyStats={keyStats}
         isComplete={isComplete}
         isPractice={practiceKeys !== null}
         graduatedKeys={graduatedKeys}
