@@ -1,28 +1,23 @@
 .performance {
-  font-size: 32px;
-  padding: 10px;
+  font-size: var(--text-4xl);
+  padding: var(--space-3);
   text-align: center;
   max-width: 1200px;
-  margin: 10px auto;
+  margin: var(--space-3) auto;
   flex-shrink: 0;
 }
 
 .wpm {
   font-weight: 700;
-  padding: 15px 30px;
-  border-radius: 12px;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-lg);
   display: inline-block;
   text-shadow:
     0 2px 8px rgba(0, 0, 0, 0.5),
     0 0 20px currentColor;
-  background: linear-gradient(
-    135deg,
-    rgba(30, 30, 45, 0.9),
-    rgba(50, 50, 70, 0.7)
-  );
+  background: linear-gradient(135deg, var(--panel), var(--panel-end));
   box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.4),
-    inset 0 2px 10px rgba(255, 255, 255, 0.1),
+    var(--shadow-raised),
     0 0 40px currentColor;
   border: 2px solid currentColor;
   animation: wpmAppear 0.5s ease-out;
@@ -45,30 +40,32 @@
 }
 
 .personal-best {
-  margin-top: 15px;
-  font-size: 24px;
-  color: #ffd700;
-  text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  margin-top: var(--space-4);
+  font-size: var(--text-2xl);
+  color: var(--personal-best);
+  text-shadow: 0 0 15px
+    color-mix(in srgb, var(--personal-best) 60%, transparent);
   font-weight: 600;
 }
 
 .missed-keys {
-  margin-top: 15px;
-  font-size: 20px;
-  color: #ffd700;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  margin-top: var(--space-4);
+  font-size: var(--text-xl);
+  color: var(--personal-best);
+  text-shadow: 0 0 10px
+    color-mix(in srgb, var(--personal-best) 50%, transparent);
   font-weight: 600;
 }
 
 .completion-message {
-  margin-top: 30px;
+  margin-top: var(--space-8);
   animation: fadeIn 0.5s ease-in;
 }
 
 .motivational-message {
-  font-size: 28px;
-  color: #fff6da;
-  margin-bottom: 20px;
+  font-size: var(--text-3xl);
+  color: var(--ink);
+  margin-bottom: var(--space-5);
   font-weight: 600;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
@@ -77,29 +74,37 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .graduated-keys {
   list-style: none;
   padding: 0;
-  margin: 15px 0 0;
-  font-size: 20px;
-  color: #fff6da;
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-xl);
+  color: var(--ink);
   font-weight: 600;
 }
 
+/* Each button sets its own colour pair; glows are derived from the first */
 .restart-button {
-  background: linear-gradient(135deg, #4caf50, #45a049);
-  color: white;
+  --button-color: var(--action-primary);
+  --button-color-end: var(--action-primary-end);
+
+  background: linear-gradient(
+    135deg,
+    var(--button-color),
+    var(--button-color-end)
+  );
+  color: var(--on-action);
   border: none;
-  padding: 15px 40px;
-  font-size: 24px;
+  padding: var(--space-4) var(--space-10);
+  font-size: var(--text-2xl);
   font-weight: 700;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
   box-shadow:
-    0 6px 20px rgba(76, 175, 80, 0.4),
+    0 6px 20px color-mix(in srgb, var(--button-color) 40%, transparent),
     inset 0 2px 5px rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -131,28 +136,20 @@
 .restart-button:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 8px 25px rgba(76, 175, 80, 0.6),
+    0 8px 25px color-mix(in srgb, var(--button-color) 60%, transparent),
     inset 0 2px 5px rgba(255, 255, 255, 0.3);
 }
 
 .restart-button:active {
   transform: translateY(1px);
   box-shadow:
-    0 4px 15px rgba(76, 175, 80, 0.4),
+    0 4px 15px color-mix(in srgb, var(--button-color) 40%, transparent),
     inset 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .secondary-button {
-  background: linear-gradient(135deg, #1aa89a, #158a7f);
-  box-shadow:
-    0 6px 20px rgba(26, 168, 154, 0.4),
-    inset 0 2px 5px rgba(255, 255, 255, 0.2);
-}
-
-.secondary-button:hover {
-  box-shadow:
-    0 8px 25px rgba(26, 168, 154, 0.6),
-    inset 0 2px 5px rgba(255, 255, 255, 0.3);
+  --button-color: var(--action-secondary);
+  --button-color-end: var(--action-secondary-end);
 }
 
 @keyframes fadeIn {
@@ -168,23 +165,19 @@
 
 @media (max-width: 768px) {
   .performance {
-    font-size: 28px;
-  }
-
-  .wpm {
-    padding: 15px 30px;
+    font-size: var(--text-3xl);
   }
 
   .personal-best {
-    font-size: 20px;
+    font-size: var(--text-xl);
   }
 
   .motivational-message {
-    font-size: 22px;
+    font-size: var(--text-xl);
   }
 
   .restart-button {
-    padding: 12px 30px;
-    font-size: 20px;
+    padding: var(--space-3) var(--space-8);
+    font-size: var(--text-xl);
   }
 }
