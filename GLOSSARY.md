@@ -47,7 +47,3 @@ _Avoid_: Error rate, accuracy
 **Weak Key**:
 A key with a high Miss Rate across the learner's last 10 Attempts.
 _Avoid_: Problem key, keys to practice
-
-**Graduated Key**:
-A key that was a Weak Key before an Attempt and is no longer one after it.
-_Avoid_: Fixed key, mastered key
