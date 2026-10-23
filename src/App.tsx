@@ -188,13 +188,13 @@ function App() {
         <h1>Learn Dvorak</h1>
       </div>
 
-      <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
-
       <TypingDisplay
         practiceKeys={practiceKeys}
         typedPortion={typedPortion}
         remainingPassage={remainingPassage}
       />
+
+      <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
 
       <Performance
         wpm={wpm}
