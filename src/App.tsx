@@ -41,9 +41,6 @@ function App() {
   const [attempts, setAttempts] = useState<Attempt[]>([])
   // The Weak Keys a Practice Test targets; null during a normal Test
   const [practiceKeys, setPracticeKeys] = useState<string[] | null>(null)
-  const [weakKeysBeforeAttempt, setWeakKeysBeforeAttempt] = useState<string[]>(
-    []
-  )
 
   useEffect(() => {
     setPassage(generatePassage(50))
@@ -78,10 +75,6 @@ function App() {
   const restartTest = () => startTest(generatePassage(50), null)
   const startPractice = () =>
     startTest(generatePracticePassage(weakKeys, 25), weakKeys)
-
-  const graduatedKeys = isComplete
-    ? weakKeysBeforeAttempt.filter((key) => !weakKeys.includes(key))
-    : []
 
   const highlightKey = useCallback((key: keyof typeof keyMap) => {
     setHighlightedKey(key)
@@ -134,7 +127,6 @@ function App() {
           const isPractice = practiceKeys !== null
           setWpm(calculatedWpm)
           setIsComplete(true)
-          setWeakKeysBeforeAttempt(weakKeys)
 
           if (!isPractice && (!personalBest || calculatedWpm > personalBest)) {
             setPersonalBest(calculatedWpm)
@@ -177,7 +169,6 @@ function App() {
     isComplete,
     keyStats,
     practiceKeys,
-    weakKeys,
   ])
 
   const remainingPassage = passage.substring(typedIndex)
@@ -201,7 +192,6 @@ function App() {
         personalBest={personalBest}
         isComplete={isComplete}
         isPractice={practiceKeys !== null}
-        graduatedKeys={graduatedKeys}
         onRestart={restartTest}
         onPractice={weakKeys.length > 0 ? startPractice : null}
       />

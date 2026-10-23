@@ -1,5 +1,4 @@
 import React, { JSX } from 'react'
-import { keyLabel } from '../utils'
 import './Performance.css'
 
 interface PerformanceProps {
@@ -7,7 +6,6 @@ interface PerformanceProps {
   personalBest: number | null
   isComplete: boolean
   isPractice: boolean
-  graduatedKeys: string[]
   onRestart: () => void
   // Starts a Practice Test; null when the learner has no Weak Keys
   onPractice: (() => void) | null
@@ -18,7 +16,6 @@ function Performance({
   personalBest,
   isComplete,
   isPractice,
-  graduatedKeys,
   onRestart,
   onPractice,
 }: PerformanceProps): JSX.Element | null {
@@ -39,14 +36,6 @@ function Performance({
 
       {personalBest && !isPractice && (
         <div className="personal-best">Personal Best: {personalBest} WPM</div>
-      )}
-
-      {graduatedKeys.length > 0 && (
-        <ul className="graduated-keys">
-          {graduatedKeys.map((key) => (
-            <li key={key}>✅ {keyLabel(key)} is no longer a Weak Key</li>
-          ))}
-        </ul>
       )}
 
       {isComplete && (

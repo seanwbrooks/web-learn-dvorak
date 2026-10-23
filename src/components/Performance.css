@@ -60,15 +60,6 @@
   gap: var(--space-4);
 }
 
-.graduated-keys {
-  list-style: none;
-  padding: 0;
-  margin: var(--space-4) 0 0;
-  font-size: var(--text-xl);
-  color: var(--ink);
-  font-weight: 600;
-}
-
 /* Each button sets its own colour pair; glows are derived from the first */
 .restart-button {
   --button-color: var(--action-primary);
