@@ -40,6 +40,10 @@ npm run prettier:check   # npm run prettier to fix
    - Orange: 40-59 WPM
    - Red: Below 40 WPM
 
+## Design system
+
+Every colour, font size, spacing step, radius and shadow is a CSS custom property in `src/tokens.css`; component styles refer to those and never to literal values. Keys take their colour from their finger zone (`--finger-pinky` through `--finger-index-right`), and glows are derived from a token with `color-mix()`. The [Learn Dvorak design system](https://claude.ai/artifact/DePUGvPge9wRPzhCdsvSUG) documents the tokens, usage rules and components; add a new value to both.
+
 ## Hosting
 
 Live at [learndvorak.com](https://learndvorak.com), served by CloudFront from a private S3 bucket with an ACM certificate. The domain is registered at GoDaddy and its DNS is hosted in Route 53. `template.yaml` defines the stack; see [ADR 0002](docs/adr/0002-cloudfront-private-s3-route53.md).
