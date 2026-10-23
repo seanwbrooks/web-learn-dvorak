@@ -146,4 +146,5 @@ export const specialKeys: string[] = [
   'Meta',
   'Alt',
   'Control',
+  'Escape',
 ]

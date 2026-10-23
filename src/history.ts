@@ -2,6 +2,7 @@
 
 const PERSONAL_BEST_KEY = 'dvorakPersonalBest'
 const ATTEMPTS_KEY = 'dvorakAttempts'
+const INTRO_SEEN_KEY = 'dvorakIntroSeen'
 const MAX_ATTEMPTS = 50
 
 export interface KeyStats {
@@ -31,6 +32,23 @@ export function loadPersonalBest(): number | null {
 export function savePersonalBest(wpm: number): void {
   try {
     window.localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString())
+  } catch {
+    // Storage unavailable (private window, blocked site data)
+  }
+}
+
+// Whether the learner has closed the intro once; it opens on a first visit
+export function loadIntroSeen(): boolean {
+  try {
+    return window.localStorage.getItem(INTRO_SEEN_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+export function saveIntroSeen(): void {
+  try {
+    window.localStorage.setItem(INTRO_SEEN_KEY, 'true')
   } catch {
     // Storage unavailable (private window, blocked site data)
   }
