@@ -1,6 +1,6 @@
 #!/bin/bash
 # Build the app, deploy the stack (see docs/adr/0002), upload dist/ and
-# clear CloudFront's cached index.html. Runs in CI on every push to master
+# clear CloudFront's cached pages. Runs in CI on every push to master
 # (see docs/adr/0003), or locally with an SSO session.
 set -euo pipefail
 
@@ -26,20 +26,25 @@ DISTRIBUTION_ID=$(stack_output DistributionId)
 WEBSITE_URL=$(stack_output WebsiteURL)
 
 # Hashed assets never change, so browsers and CloudFront can keep them for a
-# year; index.html must be re-checked so new deploys are picked up. No
+# year; the HTML pages must be re-checked so new deploys are picked up. No
 # --delete: HTML still cached at the edge or in an open tab may reference the
 # previous build's assets, which are small enough to leave in the bucket
 echo "Uploading dist/ to s3://$BUCKET_NAME..."
 aws s3 sync dist/ "s3://$BUCKET_NAME/" \
-  --exclude index.html \
+  --exclude "*.html" \
   --cache-control "public, max-age=31536000, immutable"
-aws s3 cp dist/index.html "s3://$BUCKET_NAME/index.html" \
+aws s3 sync dist/ "s3://$BUCKET_NAME/" \
+  --exclude "*" --include "*.html" \
   --cache-control "no-cache"
 
-echo "Invalidating cached index.html..."
+echo "Invalidating cached pages..."
+PAGES=("/")
+for page in dist/*.html; do
+  PAGES+=("/$(basename "$page")")
+done
 aws cloudfront create-invalidation \
   --distribution-id "$DISTRIBUTION_ID" \
-  --paths "/" "/index.html" \
+  --paths "${PAGES[@]}" \
   --query 'Invalidation.Id' --output text
 
 echo "Deployment complete!"

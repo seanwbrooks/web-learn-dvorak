@@ -8,3 +8,4 @@ Attempts, Personal Best and everything derived from them (Miss Rates, Weak Keys)
 - Personal Best is stored separately from the Attempt history (capped at 50), so it survives Attempts rolling off.
 - Changing the WPM definition to the 5-character standard made old Personal Best values incomparable, so they are discarded rather than migrated.
 - Syncing across devices would require a backend and is the main reason to revisit this decision.
+- The Contact form has a small backend of its own ([0004](0004-contact-messages-in-dynamodb.md)); it stores only messages visitors send, never learner data.

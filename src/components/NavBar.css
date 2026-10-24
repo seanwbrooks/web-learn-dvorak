@@ -1,0 +1,123 @@
+/* Takes the old centred title's place and height, so every page state still
+   fits one laptop screen (see the Layout notes in the design system) */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+  flex-shrink: 0;
+}
+
+.nav-brand {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-decoration: none;
+  background: linear-gradient(
+    135deg,
+    var(--ink) 0%,
+    var(--personal-best) 50%,
+    var(--ink) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--ink) 50%, transparent),
+    0 0 40px color-mix(in srgb, var(--ink) 30%, transparent),
+    0 4px 8px rgba(0, 0, 0, 0.5);
+  animation: brandGlow 3s ease-in-out infinite;
+}
+
+@keyframes brandGlow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.nav-link {
+  color: var(--ink-secondary);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  text-decoration: none;
+  padding: var(--space-1) 0;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+  color: var(--ink);
+}
+
+.nav-link[aria-current='page'] {
+  color: var(--ink);
+  border-bottom-color: var(--personal-best);
+}
+
+.nav-help {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nav-help:hover {
+  border-color: var(--ink-muted);
+}
+
+.nav-brand:focus-visible,
+.nav-link:focus-visible,
+.nav-help:focus-visible {
+  outline: 2px solid var(--key-target);
+  outline-offset: 4px;
+}
+
+.nav-brand:focus-visible,
+.nav-link:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 768px) {
+  .nav {
+    column-gap: var(--space-3);
+    padding: var(--space-2) 0 var(--space-3);
+  }
+
+  .nav-brand {
+    font-size: var(--text-xl);
+    letter-spacing: 1px;
+  }
+
+  .nav-links {
+    gap: var(--space-3);
+  }
+
+  .nav-link {
+    font-size: var(--text-base);
+  }
+
+  .nav-help {
+    width: 36px;
+    height: 36px;
+    font-size: var(--text-lg);
+  }
+}
