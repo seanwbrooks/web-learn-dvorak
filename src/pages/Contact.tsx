@@ -15,6 +15,8 @@ const ENDPOINT = '/api/contact'
 
 function Contact(): JSX.Element {
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  // Locked while sending, so the reset after a send can't clear newer edits
+  const sending = status.kind === 'sending'
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -72,6 +74,7 @@ function Contact(): JSX.Element {
                 autoComplete="name"
                 required
                 maxLength={100}
+                readOnly={sending}
               />
             </div>
             <div className="field">
@@ -83,6 +86,7 @@ function Contact(): JSX.Element {
                 autoComplete="email"
                 required
                 maxLength={254}
+                readOnly={sending}
               />
             </div>
             <div className="field">
@@ -93,6 +97,7 @@ function Contact(): JSX.Element {
                 rows={6}
                 required
                 maxLength={5000}
+                readOnly={sending}
               />
             </div>
             {/* Left empty by people; bots that fill it are ignored */}
@@ -110,9 +115,9 @@ function Contact(): JSX.Element {
               <button
                 type="submit"
                 className="restart-button page-action"
-                disabled={status.kind === 'sending'}
+                disabled={sending}
               >
-                {status.kind === 'sending' ? 'Sending…' : 'Send message'}
+                {sending ? 'Sending…' : 'Send message'}
               </button>
               <p className="contact-status" role="status">
                 {status.kind === 'sent' && 'Thanks, your message was sent.'}
