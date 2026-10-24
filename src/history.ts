@@ -3,6 +3,7 @@
 const PERSONAL_BEST_KEY = 'dvorakPersonalBest'
 const ATTEMPTS_KEY = 'dvorakAttempts'
 const INTRO_SEEN_KEY = 'dvorakIntroSeen'
+const PASSAGE_LENGTH_KEY = 'dvorakPassageLength'
 const MAX_ATTEMPTS = 50
 
 export interface KeyStats {
@@ -49,6 +50,27 @@ export function loadIntroSeen(): boolean {
 export function saveIntroSeen(): void {
   try {
     window.localStorage.setItem(INTRO_SEEN_KEY, 'true')
+  } catch {
+    // Storage unavailable (private window, blocked site data)
+  }
+}
+
+// Words in a normal Passage; Practice Passages are always 25
+export const PASSAGE_LENGTHS = [25, 50] as const
+export type PassageLength = (typeof PASSAGE_LENGTHS)[number]
+
+export function loadPassageLength(): PassageLength {
+  try {
+    const saved = window.localStorage.getItem(PASSAGE_LENGTH_KEY)
+    return saved === '25' ? 25 : 50
+  } catch {
+    return 50
+  }
+}
+
+export function savePassageLength(length: PassageLength): void {
+  try {
+    window.localStorage.setItem(PASSAGE_LENGTH_KEY, length.toString())
   } catch {
     // Storage unavailable (private window, blocked site data)
   }

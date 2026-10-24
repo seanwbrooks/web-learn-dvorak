@@ -3,7 +3,8 @@ import { words, keyMap } from './data'
 export function generatePassage(wordCount = 50) {
   let passage = ''
 
-  while (passage.split(' ').length < wordCount) {
+  // Trim first: the trailing space would otherwise count as a word
+  while (passage.trim().split(' ').length < wordCount) {
     const wordNumOrPunc = Math.random()
 
     if (wordNumOrPunc < 0.08) {

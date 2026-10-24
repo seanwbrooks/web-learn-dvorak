@@ -13,7 +13,7 @@ A shorter Test whose Passage is weighted toward the learner's Weak Keys. It coun
 _Avoid_: Drill, lesson
 
 **Passage**:
-The generated mix of words, numbers and punctuation the learner types during one Test.
+The generated mix of words, numbers and punctuation the learner types during one Test. A normal Passage is 25 or 50 words, whichever the learner chose last; a Practice Passage is always 25.
 _Avoid_: Display words, word list
 
 **Typed Portion**:
