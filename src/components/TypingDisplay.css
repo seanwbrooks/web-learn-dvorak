@@ -13,8 +13,6 @@
   backdrop-filter: blur(10px);
   border: 2px solid var(--line);
   flex-shrink: 0;
-  overflow: hidden;
-  max-height: 320px;
 }
 
 .typed-portion {

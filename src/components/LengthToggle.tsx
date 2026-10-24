@@ -16,7 +16,7 @@ function LengthToggle({ length, onChange }: LengthToggleProps): JSX.Element {
           type="button"
           aria-pressed={option === length}
           onClick={(e) => {
-            // Drop focus so the next Space or Enter types instead of clicking
+            // Drop focus so the next Space types instead of clicking again
             e.currentTarget.blur()
             if (option !== length) onChange(option)
           }}

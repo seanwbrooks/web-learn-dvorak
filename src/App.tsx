@@ -105,6 +105,12 @@ function App() {
         return
       }
 
+      // A key pressed on a button (the length toggle, the nav bar's ?) works
+      // that control; it isn't typing
+      if (e.target instanceof Element && e.target.closest('button, a')) {
+        return
+      }
+
       // Handle backspace
       if (e.key === 'Backspace') {
         if (typedIndex === 0) {
