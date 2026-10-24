@@ -30,12 +30,12 @@ jobs:
       - run: npm run type
       - run: npm run prettier:check
 
-      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/setup-sam@v3
         with:
           use-installer: true
 
       # Role is created by github-deploy-role.yaml (see docs/adr/0003)
-      - uses: aws-actions/configure-aws-credentials@v5
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::830550549062:role/learn-dvorak-github-deploy
           aws-region: us-east-1
