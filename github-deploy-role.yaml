@@ -50,6 +50,11 @@ Resources:
 
   DeployRole:
     Type: AWS::IAM::Role
+    Metadata:
+      cfn-lint:
+        config:
+          # W3037 doesn't list apigateway:TagResource, which stages need
+          ignore_checks: [W3037]
     Properties:
       RoleName: learn-dvorak-github-deploy
       MaxSessionDuration: 3600
@@ -143,6 +148,9 @@ Resources:
                   - apigateway:PUT
                   - apigateway:PATCH
                   - apigateway:DELETE
+                  # HTTP API stages are tagged on create
+                  - apigateway:TagResource
+                  - apigateway:UntagResource
                 Resource:
                   - !Sub 'arn:aws:apigateway:${AWS::Region}::/apis'
                   - !Sub 'arn:aws:apigateway:${AWS::Region}::/apis/*'
