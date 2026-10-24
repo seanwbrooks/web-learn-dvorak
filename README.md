@@ -6,7 +6,7 @@ A React-based typing tutor for learning the Dvorak keyboard layout.
 
 - Interactive Dvorak keyboard visualization
 - Color-coded keys for finger positioning
-- Real-time typing practice with random words, numbers, and punctuation
+- Real-time typing practice with random words, numbers, and punctuation, in 25- or 50-word Passages
 - WPM (Words Per Minute) calculation
 - Incorrect key highlighting
 - 10,000+ word database
@@ -32,9 +32,9 @@ npm run prettier:check   # npm run prettier to fix
 ## Usage
 
 1. Open the application in your browser
-2. Start typing the displayed words
+2. Pick 25 or 50 words with the toggle in the Passage's corner, then start typing
 3. Keys will highlight if you press the wrong key
-4. Complete all 50 words to see your WPM score
+4. Complete the Passage to see your WPM score
 5. Color coding indicates:
    - Green: 60+ WPM
    - Orange: 40-59 WPM

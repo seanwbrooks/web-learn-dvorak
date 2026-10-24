@@ -3,7 +3,9 @@ import { words, keyMap } from './data'
 export function generatePassage(wordCount = 50) {
   let passage = ''
 
-  while (passage.split(' ').length < wordCount) {
+  // Count only space-terminated words, so punctuation (which attaches to the
+  // next word) can't take the last word's place
+  while (passage.split(' ').length <= wordCount) {
     const wordNumOrPunc = Math.random()
 
     if (wordNumOrPunc < 0.08) {

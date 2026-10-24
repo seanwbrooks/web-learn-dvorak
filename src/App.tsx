@@ -20,6 +20,9 @@ import {
   loadPersonalBest,
   loadIntroSeen,
   saveIntroSeen,
+  loadPassageLength,
+  savePassageLength,
+  PassageLength,
   savePersonalBest,
   recordAttempt,
   buildKeyStats,
@@ -46,9 +49,10 @@ function App() {
   const [introOpen, setIntroOpen] = useState(() => !loadIntroSeen())
   // The Weak Keys a Practice Test targets; null during a normal Test
   const [practiceKeys, setPracticeKeys] = useState<string[] | null>(null)
+  const [passageLength, setPassageLength] = useState(loadPassageLength)
 
   useEffect(() => {
-    setPassage(generatePassage(50))
+    setPassage(generatePassage(loadPassageLength()))
     setPersonalBest(loadPersonalBest())
     setAttempts(loadAttempts())
   }, [])
@@ -77,7 +81,13 @@ function App() {
 
   const weakKeys = useMemo(() => findWeakKeys(attempts), [attempts])
 
-  const restartTest = () => startTest(generatePassage(50), null)
+  const restartTest = () => startTest(generatePassage(passageLength), null)
+  // Switching lengths starts a fresh Test; the abandoned one isn't recorded
+  const changePassageLength = (length: PassageLength) => {
+    setPassageLength(length)
+    savePassageLength(length)
+    startTest(generatePassage(length), null)
+  }
   const startPractice = () =>
     startTest(generatePracticePassage(weakKeys, 25), weakKeys)
 
@@ -92,6 +102,12 @@ function App() {
     const handleKeyPress = (e: KeyboardEvent) => {
       // The Test is over, or the intro is covering it
       if (isComplete || introOpen) {
+        return
+      }
+
+      // A key pressed on a button (the length toggle, the nav bar's ?) works
+      // that control; it isn't typing
+      if (e.target instanceof Element && e.target.closest('button, a')) {
         return
       }
 
@@ -212,6 +228,8 @@ function App() {
             practiceKeys={practiceKeys}
             typedPortion={typedPortion}
             remainingPassage={remainingPassage}
+            passageLength={passageLength}
+            onPassageLength={changePassageLength}
           />
         )}
 
