@@ -27,6 +27,7 @@ npm run build
 npm run lint
 npm run type
 npm run prettier:check   # npm run prettier to fix
+npm test                 # unit and integration tests (Vitest)
 ```
 
 ## Usage
