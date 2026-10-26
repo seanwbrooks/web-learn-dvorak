@@ -10,21 +10,29 @@
     "prettier:check": "prettier --check .",
     "prettier": "prettier --write .",
     "clean": "rm -rf dist node_modules",
-    "type": "tsc --noEmit"
+    "type": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1156.0",
+    "@aws-sdk/lib-dynamodb": "^3.1156.0",
     "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^10.0.3",
+    "jsdom": "^29.1.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vite": "^5.1.0"
+    "vite": "^5.1.0",
+    "vitest": "^3.2.7"
   }
 }
