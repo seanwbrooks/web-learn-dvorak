@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom/client'
 import NavBar, { Page } from './NavBar'
 import '../../tokens.css'
 import '../../index.css'
-import './site.css'
+import './Site.css'
 
 interface SiteProps {
   current: Page
-  // Opens the intro; only the practice page has one
+  // Opens the intro; only the home page has one
   onHelp?: () => void
   // Rendered outside the 75% zoom, e.g. the intro dialog
   outside?: ReactNode

@@ -1,11 +1,10 @@
 import React, { JSX } from 'react'
 import './NavBar.css'
 
-export type Page = 'practice' | 'about' | 'contact'
+export type Page = 'home' | 'about' | 'contact'
 
 interface NavBarProps {
   current: Page
-  // Opens the intro; only the practice page has one
   onHelp?: () => void
 }
 
@@ -20,7 +19,7 @@ function NavBar({ current, onHelp }: NavBarProps): JSX.Element {
       <a
         className="nav-brand"
         href="./"
-        aria-current={current === 'practice' ? 'page' : undefined}
+        aria-current={current === 'home' ? 'page' : undefined}
       >
         Learn Dvorak
       </a>

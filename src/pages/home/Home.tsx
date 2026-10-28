@@ -28,7 +28,7 @@ import {
   buildKeyStats,
 } from '../../history'
 
-function Practice() {
+function Home() {
   const [passage, setPassage] = useState('')
   const [typedPortion, setTypedPortion] = useState('')
   const [typedIndex, setTypedIndex] = useState(0)
@@ -196,7 +196,7 @@ function Practice() {
 
   return (
     <Site
-      current="practice"
+      current="home"
       onHelp={() => setIntroOpen(true)}
       outside={
         <IntroModal
@@ -239,4 +239,4 @@ function Practice() {
   )
 }
 
-export default Practice
+export default Home

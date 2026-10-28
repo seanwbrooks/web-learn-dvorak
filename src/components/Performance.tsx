@@ -1,5 +1,5 @@
 import React, { JSX } from 'react'
-import '../pages/site/Button.css'
+import './Button.css'
 import './Performance.css'
 
 interface PerformanceProps {

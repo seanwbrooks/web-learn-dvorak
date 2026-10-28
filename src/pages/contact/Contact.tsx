@@ -1,8 +1,8 @@
 import React, { JSX, useState } from 'react'
 import Site from '../site/Site'
-import '../site/Button.css'
-import '../site/reading.css'
-import './contact.css'
+import '../../components/Button.css'
+import '../site/page.css'
+import './Contact.css'
 
 type Status =
   | { kind: 'idle' }

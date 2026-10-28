@@ -1,7 +1,7 @@
 import React, { JSX } from 'react'
 import Site from '../site/Site'
-import '../site/Button.css'
-import '../site/reading.css'
+import '../../components/Button.css'
+import '../site/page.css'
 
 function About(): JSX.Element {
   return (

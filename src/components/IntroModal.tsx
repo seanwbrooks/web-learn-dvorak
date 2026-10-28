@@ -1,5 +1,5 @@
 import React, { JSX, useEffect, useRef } from 'react'
-import '../pages/site/Button.css'
+import './Button.css'
 import './IntroModal.css'
 
 interface IntroModalProps {
