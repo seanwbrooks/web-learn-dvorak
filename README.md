@@ -47,7 +47,7 @@ The shared design values (colours, font sizes, spacing, radii and shadows) are C
 
 ## Pages
 
-Three Vite pages share the nav bar in `src/components/NavBar.tsx`: `index.html` (the typing practice), `about.html` (about the Dvorak layout) and `contact.html` (a contact form). Each has its own entry in `src/` and is listed in `vite.config.ts`.
+Three Vite pages, each with a folder in `src/pages/`: `index.html` → `practice/` (the typing practice), `about.html` → `about/` (about the Dvorak layout) and `contact.html` → `contact/` (a contact form). The HTML files stay at the root because they are the site's URLs, and each is listed in `vite.config.ts`. Every page renders inside `src/pages/site/Site.tsx`, the shared shell: background, page borders, the 75% zoom and the nav bar. Components used by the practice page are in `src/components/`.
 
 ## Hosting
 

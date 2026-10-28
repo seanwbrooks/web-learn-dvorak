@@ -2,7 +2,7 @@
 import React from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import App from './App'
+import Practice from './Practice'
 
 // The learner's keypresses: the app listens for keyup on the window
 const press = (key: string, target: Element = document.body) =>
@@ -55,7 +55,7 @@ afterEach(() => {
 
 describe('a Test', () => {
   it('ends with the WPM once the whole Passage is typed', () => {
-    render(<App />)
+    render(<Practice />)
     finishPassage(40)
 
     expect(screen.getByText('40 wpm')).toBeTruthy()
@@ -63,7 +63,7 @@ describe('a Test', () => {
   })
 
   it('stays put on a wrong key and lights the key that was needed', () => {
-    render(<App />)
+    render(<Practice />)
     const passage = remaining()
     const wrong = passage[0] === 'x' ? 'z' : 'x'
 
@@ -76,7 +76,7 @@ describe('a Test', () => {
   })
 
   it('takes back the last typed character on Backspace', () => {
-    render(<App />)
+    render(<Practice />)
     const passage = remaining()
 
     typeText(passage.slice(0, 3))
@@ -86,7 +86,7 @@ describe('a Test', () => {
   })
 
   it('ignores Shift and other keys that type nothing', () => {
-    render(<App />)
+    render(<Practice />)
     press('Shift')
     press('Tab')
 
@@ -98,14 +98,14 @@ describe('a Test', () => {
 describe('Weak Keys', () => {
   // A 50-word Passage needs Space 49 times; more than 5% missed makes it Weak
   it('marks a key missed often enough on the keyboard', () => {
-    render(<App />)
+    render(<Practice />)
     finishPassage(40, { missedSpaces: 5 })
 
     expect(weakKeys()).toEqual(['Space'])
   })
 
   it('counts repeated wrong presses at one position as one Missed Key', () => {
-    render(<App />)
+    render(<Practice />)
     // 2 Missed Keys (4%), not 6 (12%)
     finishPassage(40, { missedSpaces: 2, wrongPresses: 3 })
 
@@ -113,18 +113,18 @@ describe('Weak Keys', () => {
   })
 
   it('are remembered on the next visit', () => {
-    const { unmount } = render(<App />)
+    const { unmount } = render(<Practice />)
     finishPassage(40, { missedSpaces: 5 })
     unmount()
 
-    render(<App />)
+    render(<Practice />)
     expect(weakKeys()).toEqual(['Space'])
   })
 })
 
 describe('a Practice Test', () => {
   it('targets the Weak Keys and never sets a Personal Best', () => {
-    render(<App />)
+    render(<Practice />)
     finishPassage(40, { missedSpaces: 5 })
 
     fireEvent.click(screen.getByText('Practice Weak Keys'))
@@ -141,11 +141,11 @@ describe('a Practice Test', () => {
 
 describe('Personal Best', () => {
   it('keeps the fastest Test across visits', () => {
-    const { unmount } = render(<App />)
+    const { unmount } = render(<Practice />)
     finishPassage(55)
     unmount()
 
-    render(<App />)
+    render(<Practice />)
     finishPassage(45)
     expect(screen.getByText('45 wpm')).toBeTruthy()
     expect(screen.getByText('Personal Best: 55 WPM')).toBeTruthy()
@@ -154,7 +154,7 @@ describe('Personal Best', () => {
 
 describe('Passage length', () => {
   it('starts at 50 words and switches to 25, starting a fresh Test', () => {
-    render(<App />)
+    render(<Practice />)
     expect(wordCount()).toBe(50)
     typeText(remaining().slice(0, 3))
 
@@ -165,11 +165,11 @@ describe('Passage length', () => {
   })
 
   it('remembers the choice on the next visit', () => {
-    const { unmount } = render(<App />)
+    const { unmount } = render(<Practice />)
     fireEvent.click(screen.getByRole('button', { name: '25' }))
     unmount()
 
-    render(<App />)
+    render(<Practice />)
     expect(wordCount()).toBe(25)
     finishPassage(40)
     fireEvent.click(screen.getByText('Try Again'))
@@ -177,7 +177,7 @@ describe('Passage length', () => {
   })
 
   it('treats Space pressed on the toggle as working it, not typing', () => {
-    render(<App />)
+    render(<Practice />)
     const selected = screen.getByRole('button', { name: '50' })
 
     press(' ', selected)
@@ -190,7 +190,7 @@ describe('Passage length', () => {
 describe('the intro', () => {
   it('opens on a first visit and holds typing until closed', () => {
     window.localStorage.clear()
-    render(<App />)
+    render(<Practice />)
     const passage = remaining()
     expect(screen.getByRole('dialog').hasAttribute('open')).toBe(true)
 
@@ -203,7 +203,7 @@ describe('the intro', () => {
   })
 
   it('stays closed for a returning learner', () => {
-    render(<App />)
+    render(<Practice />)
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 })

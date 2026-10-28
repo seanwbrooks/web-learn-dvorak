@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import Keyboard from './components/Keyboard'
-import TypingDisplay from './components/TypingDisplay'
-import Performance from './components/Performance'
-import Progress from './components/Progress'
-import IntroModal from './components/IntroModal'
-import NavBar from './components/NavBar'
+import Keyboard from '../../components/Keyboard'
+import TypingDisplay from '../../components/TypingDisplay'
+import Performance from '../../components/Performance'
+import Progress from '../../components/Progress'
+import IntroModal from '../../components/IntroModal'
+import Site from '../site/Site'
 import {
   generatePassage,
   generatePracticePassage,
   calculateWPM,
   countKeysNeeded,
   toPhysicalKey,
-} from './utils'
-import { keyMap, specialKeys } from './data'
-import { findWeakKeys } from './missRate'
+} from '../../utils'
+import { keyMap, specialKeys } from '../../data'
+import { findWeakKeys } from '../../missRate'
 import {
   Attempt,
   loadAttempts,
@@ -26,10 +26,9 @@ import {
   savePersonalBest,
   recordAttempt,
   buildKeyStats,
-} from './history'
-import './App.css'
+} from '../../history'
 
-function App() {
+function Practice() {
   const [passage, setPassage] = useState('')
   const [typedPortion, setTypedPortion] = useState('')
   const [typedIndex, setTypedIndex] = useState(0)
@@ -196,47 +195,48 @@ function App() {
   const remainingPassage = passage.substring(typedIndex)
 
   return (
-    <div className="app">
-      <IntroModal
-        open={introOpen}
-        onClose={() => {
-          setIntroOpen(false)
-          saveIntroSeen()
-        }}
-      />
-      <div className="app-content">
-        <NavBar current="home" onHelp={() => setIntroOpen(true)} />
-
-        {/* Results take the finished Passage's place, so the page fits one
-            screen with the keyboard (and its Weak Keys) still in view */}
-        {isComplete ? (
-          <>
-            <Performance
-              wpm={wpm}
-              personalBest={personalBest}
-              isComplete={isComplete}
-              isPractice={practiceKeys !== null}
-              onRestart={restartTest}
-              onPractice={weakKeys.length > 0 ? startPractice : null}
-            />
-            {practiceKeys === null && (
-              <Progress attempts={attempts} personalBest={personalBest} />
-            )}
-          </>
-        ) : (
-          <TypingDisplay
-            practiceKeys={practiceKeys}
-            typedPortion={typedPortion}
-            remainingPassage={remainingPassage}
-            passageLength={passageLength}
-            onPassageLength={changePassageLength}
+    <Site
+      current="practice"
+      onHelp={() => setIntroOpen(true)}
+      outside={
+        <IntroModal
+          open={introOpen}
+          onClose={() => {
+            setIntroOpen(false)
+            saveIntroSeen()
+          }}
+        />
+      }
+    >
+      {/* Results take the finished Passage's place, so the page fits one
+         screen with the keyboard (and its Weak Keys) still in view */}
+      {isComplete ? (
+        <>
+          <Performance
+            wpm={wpm}
+            personalBest={personalBest}
+            isComplete={isComplete}
+            isPractice={practiceKeys !== null}
+            onRestart={restartTest}
+            onPractice={weakKeys.length > 0 ? startPractice : null}
           />
-        )}
+          {practiceKeys === null && (
+            <Progress attempts={attempts} personalBest={personalBest} />
+          )}
+        </>
+      ) : (
+        <TypingDisplay
+          practiceKeys={practiceKeys}
+          typedPortion={typedPortion}
+          remainingPassage={remainingPassage}
+          passageLength={passageLength}
+          onPassageLength={changePassageLength}
+        />
+      )}
 
-        <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
-      </div>
-    </div>
+      <Keyboard highlightedKey={highlightedKey} weakKeys={weakKeys} />
+    </Site>
   )
 }
 
-export default App
+export default Practice
