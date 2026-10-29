@@ -1,6 +1,6 @@
 # Host on CloudFront with a private S3 bucket and a Route 53 domain
 
-The app is served by CloudFront from a private S3 bucket (Origin Access Control), with an ACM certificate for HTTPS, on `learndvorak.com`, whose DNS is hosted in Route 53. It replaces the HTTP-only Google Cloud Storage site on `learn-dvorak.food` (registered at GoDaddy). An S3 website endpoint alone can't serve HTTPS on a custom domain, and keeping DNS in the same AWS account lets `template.yaml` own the certificate validation and DNS records.
+The app is served by CloudFront from a private S3 bucket (Origin Access Control), with an ACM certificate for HTTPS, on `learndvorak.com`, whose DNS is hosted in Route 53. It replaces the HTTP-only Google Cloud Storage site on `learn-dvorak.food` (registered at GoDaddy). An S3 website endpoint alone can't serve HTTPS on a custom domain, and keeping DNS in the same AWS account lets `infra/template.yaml` own the certificate validation and DNS records.
 
 ## Consequences
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createHandler } from './index.mjs'
+import { createHandler } from '../../src/api/contact/index.mjs'
 
 // DynamoDB is the boundary: record what would be written instead of writing it
 let stored

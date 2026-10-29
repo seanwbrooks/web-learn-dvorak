@@ -10,7 +10,7 @@ type Status =
   | { kind: 'sent' }
   | { kind: 'failed'; message: string }
 
-// Stored by api/contact (see docs/adr/0004)
+// Stored by src/api/contact (see docs/adr/0004)
 const ENDPOINT = '/api/contact'
 
 function Contact(): JSX.Element {

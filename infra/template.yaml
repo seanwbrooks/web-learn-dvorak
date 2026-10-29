@@ -37,13 +37,13 @@ Resources:
   ContactFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: api/contact/
+      CodeUri: ../src/api/contact/
       Handler: index.handler
       Runtime: nodejs22.x
       Architectures: [arm64]
       MemorySize: 128
       Timeout: 5
-      # Created by github-deploy-role.yaml; caps what this function's role
+      # Created by infra/github-deploy-role.yaml; caps what this function's role
       # can ever be granted (see docs/adr/0003)
       PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/learn-dvorak-lambda-boundary'
       Environment:
@@ -199,7 +199,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           Compress: true
           # Managed CachingOptimized policy; honours the Cache-Control headers
-          # deploy.sh sets on each object
+          # scripts/deploy.sh sets on each object
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
           FunctionAssociations:
             - EventType: viewer-request
@@ -252,9 +252,9 @@ Outputs:
     Value: !Sub 'https://${DomainName}'
 
   BucketName:
-    Description: Private bucket deploy.sh uploads dist/ to
+    Description: Private bucket scripts/deploy.sh uploads dist/ to
     Value: !Ref WebsiteBucket
 
   DistributionId:
-    Description: CloudFront distribution deploy.sh invalidates after upload
+    Description: CloudFront distribution scripts/deploy.sh invalidates after upload
     Value: !Ref Distribution

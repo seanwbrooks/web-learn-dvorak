@@ -1,10 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Learn Dvorak - role GitHub Actions assumes to run deploy.sh (see docs/adr/0003)
 
-# Deployed once by hand, separately from template.yaml, so the workflow can
-# never change its own permissions:
-#   aws cloudformation deploy --template-file github-deploy-role.yaml \
-#     --stack-name learn-dvorak-github-deploy --capabilities CAPABILITY_NAMED_IAM
+# Deployed by hand with scripts/deploy-role.sh, separately from
+# infra/template.yaml, so the workflow can never change its own permissions
 
 Parameters:
   Repository:
@@ -109,7 +107,7 @@ Resources:
                   - arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*
                   - arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*/*
               # CloudFormation acts with these credentials, so the role also
-              # needs what template.yaml creates. Bucket names are generated
+              # needs what infra/template.yaml creates. Bucket names are generated
               # from the stack name.
               - Sid: WebsiteBucket
                 Effect: Allow
