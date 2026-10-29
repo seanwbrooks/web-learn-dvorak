@@ -27,7 +27,8 @@ npm run build
 npm run lint
 npm run type
 npm run prettier:check   # npm run prettier to fix
-npm test                 # tests/unit and tests/integration (Vitest)
+npm test                 # tests/unit and tests/integration (Vitest), with coverage
+npm run verify           # lint, types, Prettier and tests: what CI and the pre-commit hook run
 ```
 
 ## Usage
@@ -51,7 +52,9 @@ Three Vite pages, each with a folder in `src/pages/`: `index.html` → `home/` (
 
 The app's logic lives in one module per glossary concept, flat in `src/`: `passage.ts` (generating a Passage or Practice Passage), `typingTest.ts` (the rules of a Test, ending in an Attempt), `weakKeys.ts` (Miss Rates and Weak Keys), `learnerHistory.ts` (Attempts, Personal Best and settings in localStorage; see ADR 0001) and `keyboard.ts` (the Dvorak layout and physical keys).
 
-Tests live in `tests/`, named after the concept they cover: `tests/unit/` tests each module through its exports (and the Contact form's Lambda in `contactApi.test.mjs`), `tests/integration/homePage.test.tsx` drives the home page as a learner would, and `tests/setup.ts` starts every test with no learner history.
+Tests live in `tests/`, named after the concept they cover: `tests/unit/` tests each module through its exports (and the Contact form's Lambda in `contactApi.test.mjs`), `tests/integration/` drives the home and Contact pages as a learner would, and `tests/setup.ts` starts every test with no learner history.
+
+How code is written, tested and committed is in [CODING_STANDARDS.md](CODING_STANDARDS.md).
 
 ## Hosting
 
@@ -61,7 +64,7 @@ The Contact form posts to `/api/contact`, which CloudFront routes to the Lambda 
 
 ## Deployment
 
-Every push to `master` runs `.github/workflows/deploy.yml`: lint, type-check, Prettier, tests, then `scripts/deploy.sh`, which builds the app, deploys the stack with SAM, uploads `dist/` and invalidates the cached HTML pages. The workflow signs in to AWS through GitHub OIDC with the role in `infra/github-deploy-role.yaml`, a separate stack you deploy by hand with `scripts/deploy-role.sh`, before merging any change that adds an AWS resource type; see [ADR 0003](docs/adr/0003-deploy-from-github-actions.md).
+Every pull request runs `.github/workflows/checks.yml` (`npm run verify` and commitlint). Every push to `master` runs `.github/workflows/deploy.yml`: `npm run verify`, then `scripts/deploy.sh`, which builds the app, deploys the stack with SAM, uploads `dist/` and invalidates the cached HTML pages. The workflow signs in to AWS through GitHub OIDC with the role in `infra/github-deploy-role.yaml`, a separate stack you deploy by hand with `scripts/deploy-role.sh`, before merging any change that adds an AWS resource type; see [ADR 0003](docs/adr/0003-deploy-from-github-actions.md).
 
 To deploy from your machine instead:
 
