@@ -17,5 +17,13 @@ export default defineConfig({
   test: {
     include: ['tests/**/*.test.{ts,tsx,mjs}'],
     setupFiles: ['tests/setup.ts'],
+    // Enforced by npm test (see CODING_STANDARDS.md); entry points only mount
+    // a page, so they're left out
+    coverage: {
+      include: ['src/**'],
+      exclude: ['src/pages/*/main.tsx'],
+      reporter: ['text-summary'],
+      thresholds: { lines: 85, statements: 85, functions: 85, branches: 85 },
+    },
   },
 })
