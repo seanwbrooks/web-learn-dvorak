@@ -28,6 +28,10 @@ test('with a keyboard, the intro opens, and closing it starts the Test', async (
 
   await page.getByRole('button', { name: 'Start typing' }).click()
   await expect(page.getByRole('dialog', { name: intro })).toBeHidden()
+  // Focus stays on the closed dialog's button until the browser next
+  // renders, and keys pressed on a button aren't typing; a learner is never
+  // that quick, so wait until it's back on the page
+  await expect(page.locator('body')).toBeFocused()
 
   const passage = await page.locator('.remaining-passage').textContent()
   await page.keyboard.press(passage!.charAt(0))
