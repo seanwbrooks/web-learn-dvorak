@@ -10,6 +10,7 @@ import TypingDisplay from '../../components/TypingDisplay'
 import Performance from '../../components/Performance'
 import Progress from '../../components/Progress'
 import IntroModal from '../../components/IntroModal'
+import KeyboardWarning from '../../components/KeyboardWarning'
 import Site from '../site/Site'
 import { generatePassage, generatePracticePassage } from '../../passage'
 import { findWeakKeys } from '../../weakKeys'
@@ -39,6 +40,10 @@ const testReducer = (test: Test, action: TestAction): Test =>
     ? startTest(action.passage, action.practiceKeys)
     : press(test, action.key, action.now)
 
+// A phone or tablet, whose main input is a finger rather than a mouse
+const onTouchscreen = () =>
+  window.matchMedia?.('(hover: none) and (pointer: coarse)').matches ?? false
+
 function Home() {
   const [passageLength, setPassageLength] = useState(loadPassageLength)
   const [test, dispatch] = useReducer(testReducer, passageLength, (length) =>
@@ -47,6 +52,7 @@ function Home() {
   const [history, setHistory] = useState(loadLearnerHistory)
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null)
   const [introOpen, setIntroOpen] = useState(() => !loadIntroSeen())
+  const [keyboardWarningOpen, setKeyboardWarningOpen] = useState(onTouchscreen)
 
   const weakKeys = useMemo(() => findWeakKeys(history.attempts), [history])
   const { attempt, practiceKeys, latestWrongKeypress } = test
@@ -79,8 +85,8 @@ function Home() {
 
   useEffect(() => {
     const handleKeyUp = (e: KeyboardEvent) => {
-      // The intro is covering the Passage
-      if (introOpen) return
+      // A dialog is covering the Passage
+      if (introOpen || keyboardWarningOpen) return
       // A key pressed on a button (the length toggle, the nav bar's ?) works
       // that control; it isn't typing
       if (e.target instanceof Element && e.target.closest('button, a')) return
@@ -88,20 +94,27 @@ function Home() {
     }
     window.addEventListener('keyup', handleKeyUp)
     return () => window.removeEventListener('keyup', handleKeyUp)
-  }, [introOpen])
+  }, [introOpen, keyboardWarningOpen])
 
   return (
     <Site
       current="home"
       onHelp={() => setIntroOpen(true)}
       outside={
-        <IntroModal
-          open={introOpen}
-          onClose={() => {
-            setIntroOpen(false)
-            saveIntroSeen()
-          }}
-        />
+        <>
+          <KeyboardWarning
+            open={keyboardWarningOpen}
+            onClose={() => setKeyboardWarningOpen(false)}
+          />
+          {/* On a first visit, the intro follows the warning */}
+          <IntroModal
+            open={introOpen && !keyboardWarningOpen}
+            onClose={() => {
+              setIntroOpen(false)
+              saveIntroSeen()
+            }}
+          />
+        </>
       }
     >
       {/* Results take the finished Passage's place, so the page fits one
