@@ -207,3 +207,56 @@ describe('the intro', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 })
+
+describe('on a touchscreen device', () => {
+  // A phone or tablet: its main input can't hover and is a finger
+  beforeEach(() => {
+    window.matchMedia = vi.fn((query: string) => ({
+      matches: query === '(hover: none) and (pointer: coarse)',
+    })) as unknown as typeof window.matchMedia
+  })
+  afterEach(() => {
+    // jsdom has no matchMedia, as on a browser that can't tell
+    delete (window as Partial<Window>).matchMedia
+  })
+
+  it('warns that the Test needs a keyboard and holds typing until dismissed', () => {
+    render(<Home />)
+    const passage = remaining()
+    expect(
+      screen.getByRole('dialog', { name: 'Learn Dvorak needs a keyboard' })
+    ).toBeTruthy()
+
+    press(passage[0])
+    expect(typed()).toBe('')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Continue anyway' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    press(passage[0])
+    expect(typed()).toBe(passage[0])
+  })
+
+  it('shows the intro after the warning on a first visit', () => {
+    window.localStorage.clear()
+    render(<Home />)
+    expect(
+      screen.queryByRole('dialog', { name: 'Welcome to Learn Dvorak' })
+    ).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Continue anyway' }))
+    expect(
+      screen.getByRole('dialog', { name: 'Welcome to Learn Dvorak' })
+    ).toBeTruthy()
+  })
+})
+
+describe('with a keyboard and mouse', () => {
+  it("doesn't warn", () => {
+    window.matchMedia = vi.fn(() => ({
+      matches: false,
+    })) as unknown as typeof window.matchMedia
+    render(<Home />)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    delete (window as Partial<Window>).matchMedia
+  })
+})
