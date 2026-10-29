@@ -2,6 +2,14 @@
   box-sizing: border-box;
 }
 
+/* Safari paints the root when you scroll past either end and behind its
+   toolbars, so it gets the page's colour rather than the default white;
+   the dark scheme keeps Safari's own UI dark to match */
+html {
+  background-color: var(--bg-1);
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   padding: 0;
