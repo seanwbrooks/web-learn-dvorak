@@ -6,14 +6,21 @@ How code in this repo is written and reviewed. Tooling enforces the mechanical r
 
 ## 1. Enforcement
 
-| Check      | Command                  | Configured in       |
-| :--------- | :----------------------- | :------------------ |
-| Lint       | `npm run lint`           | `eslint.config.mjs` |
-| Types      | `npm run type`           | `tsconfig.json`     |
-| Formatting | `npm run prettier:check` | Prettier defaults   |
-| Tests      | `npm test`               | `vite.config.ts`    |
+| Check                  | Command                  | Configured in           |
+| :--------------------- | :----------------------- | :---------------------- |
+| Lint                   | `npm run lint`           | `eslint.config.mjs`     |
+| Types                  | `npm run type`           | `tsconfig.json`         |
+| Formatting             | `npm run prettier:check` | Prettier defaults       |
+| Tests and 85% coverage | `npm test`               | `vite.config.ts`        |
+| Commit messages        | `npx commitlint`         | `commitlint.config.mjs` |
 
-There is no pre-commit hook. The deploy workflow (`.github/workflows/deploy.yml`) runs all four on every push to `master` and stops before deploying if one fails, so run them before opening a PR: a failure surfaces only after merge.
+`npm run verify` runs the first four. They run three times:
+
+1. **On commit:** the Husky `pre-commit` hook runs `npm run verify`, and the `commit-msg` hook runs commitlint. `npm install` sets the hooks up.
+2. **On every pull request:** `.github/workflows/checks.yml` runs `npm run verify` and commitlint over the PR's commits.
+3. **Before every deploy:** `.github/workflows/deploy.yml` runs `npm run verify` and stops if it fails.
+
+Fix a failing check rather than skipping it with `--no-verify`.
 
 ---
 
@@ -88,8 +95,10 @@ Write the failing test first, watch it fail for the expected reason, then write 
 
 ```bash
 npx vitest        # watch mode while working
-npm test          # one full run, as CI does
+npm test          # one full run with coverage, as CI does
 ```
+
+`npm test` fails below 85% coverage of `src/` (lines, statements, functions and branches); the pages' `main.tsx` entry points are left out because they only mount a page. Cover new code with tests rather than lowering the threshold or widening the exclusions.
 
 - Test through a module's exports (`tests/unit/`) or by driving a page as a learner would (`tests/integration/`), never through private functions.
 - Expected values are literals or worked examples, never recomputed the way the code computes them.
@@ -109,14 +118,17 @@ npm test          # one full run, as CI does
 
 ### Commit messages
 
-A short imperative sentence in the glossary's terms, with a body explaining _why_ when it isn't obvious:
+[Conventional Commits](https://www.conventionalcommits.org/): `<type>(<optional scope>): <description>`, with an imperative description in the glossary's terms and a body explaining _why_ when it isn't obvious. Commits before this standard are plain sentences and stay that way.
 
-- `Warn on phones and tablets that a Test needs a keyboard`
-- `Move tests to tests/, named by concept`
-- `Pin deploy-role.sh to us-east-1, like deploy.sh`
+- `feat(home): warn on phones and tablets that a Test needs a keyboard`
+- `fix(contact): keep the form locked while a message sends`
+- `refactor: move tests to tests/, named by concept`
+- `docs: record the deploy role in ADR 0003`
+
+Types are those of `@commitlint/config-conventional`: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore` and `revert`.
 
 ### Pull request checklist
 
-- [ ] All four checks in section 1 pass locally.
+- [ ] `npm run verify` passes, and every commit message passes commitlint.
 - [ ] The PR body shows evidence that matches section 5.
 - [ ] A change that adds an AWS resource type comes with its permissions in `infra/github-deploy-role.yaml`, applied by hand with `scripts/deploy-role.sh` before merging ([ADR 0003](docs/adr/0003-deploy-from-github-actions.md)).
