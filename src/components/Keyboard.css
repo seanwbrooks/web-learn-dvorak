@@ -13,7 +13,7 @@
 }
 
 .keyboard-row {
-  /* 15 units x 4 quarter-unit columns; see ROW_UNITS in data.ts. Keys are
+  /* 15 units x 4 quarter-unit columns; see ROW_UNITS in keyboard.ts. Keys are
      spaced with margins rather than column-gap so gaps don't stack up inside
      wide keys. */
   display: grid;

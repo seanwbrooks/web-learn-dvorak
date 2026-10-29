@@ -1,9 +1,8 @@
 // A Test: one pass through a Passage, from the first keypress to the Attempt
 // it ends in. Plain data and functions, so the rules of typing can be tested
 // without React; the home page drives it with useReducer.
-import { Attempt, buildKeyStats } from './history'
-import { calculateWPM, countKeysNeeded, toPhysicalKey } from './utils'
-import { specialKeys } from './data'
+import { Attempt, KeyStats } from './learnerHistory'
+import { specialKeys, toPhysicalKey } from './keyboard'
 
 export interface Test {
   passage: string
@@ -95,4 +94,37 @@ function finish(test: Test, now: number): Attempt {
     ),
     ...(test.practiceKeys && { practice: true }),
   }
+}
+
+// How many times each physical key is needed to type the passage
+function countKeysNeeded(passage: string): Record<string, number> {
+  const needed: Record<string, number> = {}
+  for (const char of passage) {
+    const key = toPhysicalKey(char)
+    needed[key] = (needed[key] ?? 0) + 1
+  }
+  return needed
+}
+
+// Standard WPM: every five correctly typed characters count as one word
+function calculateWPM(charCount: number, elapsedMs: number): number {
+  const elapsedMins = elapsedMs / 60000
+  if (elapsedMins <= 0) return 0
+  return Math.round(charCount / 5 / elapsedMins)
+}
+
+function buildKeyStats(
+  needed: Record<string, number>,
+  missed: Record<string, number>,
+  wrongKeypresses: Record<string, number>
+): Record<string, KeyStats> {
+  const keys: Record<string, KeyStats> = {}
+  for (const [key, count] of Object.entries(needed)) {
+    keys[key] = {
+      needed: count,
+      missed: missed[key] ?? 0,
+      wrongKeypresses: wrongKeypresses[key] ?? 0,
+    }
+  }
+  return keys
 }

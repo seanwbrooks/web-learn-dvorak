@@ -1,6 +1,5 @@
 import React, { JSX } from 'react'
-import { keyboardLayout, KeyDef, ROW_UNITS } from '../data'
-import { keyLabel } from '../utils'
+import { keyboardLayout, KeyDef, keyLabel, ROW_UNITS } from '../keyboard'
 import './Keyboard.css'
 
 // Each row is a grid of quarter-unit columns, so any width that is a

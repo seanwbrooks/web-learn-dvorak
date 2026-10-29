@@ -1,6 +1,3 @@
-import wordsData from './words-full.json'
-export const words = wordsData
-
 // Key widths are in units (u), where 1u is a standard letter key. Every full
 // row adds up to ROW_UNITS so the keyboard's left and right edges line up;
 // shorter rows (the space bar) are centred.
@@ -148,3 +145,13 @@ export const specialKeys: string[] = [
   'Control',
   'Escape',
 ]
+
+// How a physical key is named to the learner
+export const keyLabel = (key: string) =>
+  key === ' ' ? 'Space' : key.toUpperCase()
+
+// The physical Dvorak key that produces a character, e.g. 'A' -> 'a', '"' -> "'"
+export function toPhysicalKey(char: string): string {
+  const lower = char.toLowerCase()
+  return keyMap[lower] ?? lower
+}

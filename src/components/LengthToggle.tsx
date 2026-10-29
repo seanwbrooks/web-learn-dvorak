@@ -1,5 +1,5 @@
 import React, { JSX } from 'react'
-import { PASSAGE_LENGTHS, PassageLength } from '../history'
+import { PASSAGE_LENGTHS, PassageLength } from '../learnerHistory'
 import './LengthToggle.css'
 
 interface LengthToggleProps {
