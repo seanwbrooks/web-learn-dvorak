@@ -27,7 +27,7 @@ npm run build
 npm run lint
 npm run type
 npm run prettier:check   # npm run prettier to fix
-npm test                 # unit and integration tests (Vitest)
+npm test                 # tests/unit and tests/integration (Vitest)
 ```
 
 ## Usage
@@ -50,6 +50,8 @@ The shared design values (colours, font sizes, spacing, radii and shadows) are C
 Three Vite pages, each with a folder in `src/pages/`: `index.html` → `home/` (the typing practice), `about.html` → `about/` (about the Dvorak layout) and `contact.html` → `contact/` (a contact form). The HTML files stay at the root because they are the site's URLs, and each is listed in `vite.config.ts`. Every page renders inside `src/pages/site/Site.tsx`, the shared shell: background, page borders, the 75% zoom and the nav bar. Components used by the home page, and the shared `Button.css`, are in `src/components/`.
 
 The app's logic lives in one module per glossary concept, flat in `src/`: `passage.ts` (generating a Passage or Practice Passage), `typingTest.ts` (the rules of a Test, ending in an Attempt), `weakKeys.ts` (Miss Rates and Weak Keys), `learnerHistory.ts` (Attempts, Personal Best and settings in localStorage; see ADR 0001) and `keyboard.ts` (the Dvorak layout and physical keys).
+
+Tests live in `tests/`, named after the concept they cover: `tests/unit/` tests each module through its exports (and the Contact form's Lambda in `contactApi.test.mjs`), `tests/integration/homePage.test.tsx` drives the home page as a learner would, and `tests/setup.ts` starts every test with no learner history.
 
 ## Hosting
 

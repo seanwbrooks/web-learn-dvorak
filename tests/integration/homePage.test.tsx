@@ -2,7 +2,7 @@
 import React from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import Home from './Home'
+import Home from '../../src/pages/home/Home'
 
 // The learner's keypresses: the app listens for keyup on the window
 const press = (key: string, target: Element = document.body) =>
