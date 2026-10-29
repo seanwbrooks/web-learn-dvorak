@@ -5,7 +5,6 @@ export type Page = 'home' | 'about' | 'contact'
 
 interface NavBarProps {
   current: Page
-  // Opens the intro; only the home page has one
   onHelp?: () => void
 }
 
