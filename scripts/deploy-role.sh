@@ -14,5 +14,6 @@ fi
 aws cloudformation deploy \
   --template-file infra/github-deploy-role.yaml \
   --stack-name learn-dvorak-github-deploy \
+  --region us-east-1 \
   --capabilities CAPABILITY_NAMED_IAM \
   --no-fail-on-empty-changeset
