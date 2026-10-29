@@ -1,198 +1,94 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+} from 'react'
 import Keyboard from '../../components/Keyboard'
 import TypingDisplay from '../../components/TypingDisplay'
 import Performance from '../../components/Performance'
 import Progress from '../../components/Progress'
 import IntroModal from '../../components/IntroModal'
 import Site from '../site/Site'
-import {
-  generatePassage,
-  generatePracticePassage,
-  calculateWPM,
-  countKeysNeeded,
-  toPhysicalKey,
-} from '../../utils'
-import { keyMap, specialKeys } from '../../data'
+import { generatePassage, generatePracticePassage } from '../../utils'
 import { findWeakKeys } from '../../missRate'
 import {
-  Attempt,
-  loadAttempts,
-  loadPersonalBest,
   loadIntroSeen,
   saveIntroSeen,
   loadPassageLength,
   savePassageLength,
   PassageLength,
-  savePersonalBest,
+  loadLearnerHistory,
   recordAttempt,
-  buildKeyStats,
 } from '../../history'
+import {
+  Test,
+  startTest,
+  press,
+  typedPortion,
+  remainingPassage,
+} from '../../typingTest'
+
+type TestAction =
+  | { type: 'start'; passage: string; practiceKeys: string[] | null }
+  | { type: 'press'; key: string; now: number }
+
+const testReducer = (test: Test, action: TestAction): Test =>
+  action.type === 'start'
+    ? startTest(action.passage, action.practiceKeys)
+    : press(test, action.key, action.now)
 
 function Home() {
-  const [passage, setPassage] = useState('')
-  const [typedPortion, setTypedPortion] = useState('')
-  const [typedIndex, setTypedIndex] = useState(0)
-  const [highlightedKey, setHighlightedKey] = useState<
-    keyof typeof keyMap | null
-  >(null)
-  const [startTime, setStartTime] = useState<Date | null>(null)
-  const [wpm, setWpm] = useState<number | null>(null)
-  const [personalBest, setPersonalBest] = useState<number | null>(null)
-  const [isComplete, setIsComplete] = useState(false)
-  // Passage positions with at least one Wrong Keypress (each is one Missed Key)
-  const [missedPositions, setMissedPositions] = useState<Set<number>>(new Set())
-  const [wrongKeypresses, setWrongKeypresses] = useState<
-    Record<string, number>
-  >({})
-  const [attempts, setAttempts] = useState<Attempt[]>([])
-  const [introOpen, setIntroOpen] = useState(() => !loadIntroSeen())
-  // The Weak Keys a Practice Test targets; null during a normal Test
-  const [practiceKeys, setPracticeKeys] = useState<string[] | null>(null)
   const [passageLength, setPassageLength] = useState(loadPassageLength)
+  const [test, dispatch] = useReducer(testReducer, passageLength, (length) =>
+    startTest(generatePassage(length))
+  )
+  const [history, setHistory] = useState(loadLearnerHistory)
+  const [highlightedKey, setHighlightedKey] = useState<string | null>(null)
+  const [introOpen, setIntroOpen] = useState(() => !loadIntroSeen())
 
-  useEffect(() => {
-    setPassage(generatePassage(loadPassageLength()))
-    setPersonalBest(loadPersonalBest())
-    setAttempts(loadAttempts())
-  }, [])
+  const weakKeys = useMemo(() => findWeakKeys(history.attempts), [history])
+  const { attempt, practiceKeys, latestWrongKeypress } = test
 
-  const startTest = (newPassage: string, newPracticeKeys: string[] | null) => {
-    setPassage(newPassage)
-    setPracticeKeys(newPracticeKeys)
-    setTypedPortion('')
-    setTypedIndex(0)
-    setHighlightedKey(null)
-    setStartTime(null)
-    setWpm(null)
-    setIsComplete(false)
-    setMissedPositions(new Set())
-    setWrongKeypresses({})
-  }
-
-  const keyStats = useMemo(() => {
-    const missedKeys: Record<string, number> = {}
-    for (const position of missedPositions) {
-      const key = toPhysicalKey(passage.charAt(position))
-      missedKeys[key] = (missedKeys[key] ?? 0) + 1
-    }
-    return buildKeyStats(countKeysNeeded(passage), missedKeys, wrongKeypresses)
-  }, [passage, missedPositions, wrongKeypresses])
-
-  const weakKeys = useMemo(() => findWeakKeys(attempts), [attempts])
-
-  const restartTest = () => startTest(generatePassage(passageLength), null)
+  const startNewTest = (passage: string, keys: string[] | null = null) =>
+    dispatch({ type: 'start', passage, practiceKeys: keys })
+  const restartTest = () => startNewTest(generatePassage(passageLength))
   // Switching lengths starts a fresh Test; the abandoned one isn't recorded
   const changePassageLength = (length: PassageLength) => {
     setPassageLength(length)
     savePassageLength(length)
-    startTest(generatePassage(length), null)
+    startNewTest(generatePassage(length))
   }
   const startPractice = () =>
-    startTest(generatePracticePassage(weakKeys, 25), weakKeys)
+    startNewTest(generatePracticePassage(weakKeys, 25), weakKeys)
 
-  const highlightKey = useCallback((key: keyof typeof keyMap) => {
-    setHighlightedKey(key)
-    setTimeout(() => {
-      setHighlightedKey(null)
-    }, 2000)
-  }, [])
+  // A finished Test becomes an Attempt in the learner's history, before the
+  // results paint, so they never show without the Personal Best
+  useLayoutEffect(() => {
+    if (attempt) setHistory((current) => recordAttempt(current, attempt))
+  }, [attempt])
+
+  // Light the key that was needed for 2 seconds after a Wrong Keypress
+  useEffect(() => {
+    setHighlightedKey(latestWrongKeypress?.neededKey ?? null)
+    if (!latestWrongKeypress) return
+    const timer = setTimeout(() => setHighlightedKey(null), 2000)
+    return () => clearTimeout(timer)
+  }, [latestWrongKeypress])
 
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      // The Test is over, or the intro is covering it
-      if (isComplete || introOpen) {
-        return
-      }
-
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // The intro is covering the Passage
+      if (introOpen) return
       // A key pressed on a button (the length toggle, the nav bar's ?) works
       // that control; it isn't typing
-      if (e.target instanceof Element && e.target.closest('button, a')) {
-        return
-      }
-
-      // Handle backspace
-      if (e.key === 'Backspace') {
-        if (typedIndex === 0) {
-          return
-        }
-        setTypedIndex((prev) => prev - 1)
-        setTypedPortion((prev) => prev.slice(0, -1))
-        return
-      }
-
-      // Ignore special keys
-      if (specialKeys.includes(e.key)) {
-        return
-      }
-
-      // Check if the key matches the expected character
-      if (e.key === passage.charAt(typedIndex)) {
-        const newTypedPortion = typedPortion + e.key
-        const newTypedIndex = typedIndex + 1
-        // Start timing on the first correct character
-        const testStart = startTime ?? new Date()
-        if (!startTime) {
-          setStartTime(testStart)
-        }
-
-        setTypedPortion(newTypedPortion)
-        setTypedIndex(newTypedIndex)
-
-        // Check if completed
-        if (newTypedIndex >= passage.length) {
-          const calculatedWpm = calculateWPM(
-            passage.length,
-            Date.now() - testStart.getTime()
-          )
-          const isPractice = practiceKeys !== null
-          setWpm(calculatedWpm)
-          setIsComplete(true)
-
-          if (!isPractice && (!personalBest || calculatedWpm > personalBest)) {
-            setPersonalBest(calculatedWpm)
-            savePersonalBest(calculatedWpm)
-          }
-
-          setAttempts((currentAttempts) =>
-            recordAttempt(currentAttempts, {
-              wpm: calculatedWpm,
-              date: new Date().toISOString(),
-              keys: keyStats,
-              ...(isPractice && { practice: true }),
-            })
-          )
-        }
-      } else {
-        // Highlight the correct key; count the Wrong Keypress, and the
-        // position as a Missed Key the first time it goes wrong
-        const keyToHit = toPhysicalKey(passage.charAt(typedIndex))
-        highlightKey(keyToHit)
-        setWrongKeypresses((prev) => ({
-          ...prev,
-          [keyToHit]: (prev[keyToHit] ?? 0) + 1,
-        }))
-        setMissedPositions((prev) =>
-          prev.has(typedIndex) ? prev : new Set(prev).add(typedIndex)
-        )
-      }
+      if (e.target instanceof Element && e.target.closest('button, a')) return
+      dispatch({ type: 'press', key: e.key, now: Date.now() })
     }
-
-    window.addEventListener('keyup', handleKeyPress)
-    return () => window.removeEventListener('keyup', handleKeyPress)
-  }, [
-    passage,
-    typedPortion,
-    typedIndex,
-    startTime,
-    highlightKey,
-    personalBest,
-    isComplete,
-    keyStats,
-    practiceKeys,
-    introOpen,
-  ])
-
-  const remainingPassage = passage.substring(typedIndex)
+    window.addEventListener('keyup', handleKeyUp)
+    return () => window.removeEventListener('keyup', handleKeyUp)
+  }, [introOpen])
 
   return (
     <Site
@@ -210,25 +106,28 @@ function Home() {
     >
       {/* Results take the finished Passage's place, so the page fits one
          screen with the keyboard (and its Weak Keys) still in view */}
-      {isComplete ? (
+      {attempt ? (
         <>
           <Performance
-            wpm={wpm}
-            personalBest={personalBest}
-            isComplete={isComplete}
+            wpm={attempt.wpm}
+            personalBest={history.personalBest}
+            isComplete
             isPractice={practiceKeys !== null}
             onRestart={restartTest}
             onPractice={weakKeys.length > 0 ? startPractice : null}
           />
           {practiceKeys === null && (
-            <Progress attempts={attempts} personalBest={personalBest} />
+            <Progress
+              attempts={history.attempts}
+              personalBest={history.personalBest}
+            />
           )}
         </>
       ) : (
         <TypingDisplay
           practiceKeys={practiceKeys}
-          typedPortion={typedPortion}
-          remainingPassage={remainingPassage}
+          typedPortion={typedPortion(test)}
+          remainingPassage={remainingPassage(test)}
           passageLength={passageLength}
           onPassageLength={changePassageLength}
         />

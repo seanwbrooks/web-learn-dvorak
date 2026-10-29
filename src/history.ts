@@ -84,18 +84,36 @@ export function loadAttempts(): Attempt[] {
   }
 }
 
-// Returns the learner's history including the new Attempt
+// The Attempts and Personal Best the app reads back on every visit
+export interface LearnerHistory {
+  attempts: Attempt[]
+  personalBest: number | null
+}
+
+export const loadLearnerHistory = (): LearnerHistory => ({
+  attempts: loadAttempts(),
+  personalBest: loadPersonalBest(),
+})
+
+// Adds a finished Attempt; only a normal Test, never a Practice Test, can set
+// a new Personal Best
 export function recordAttempt(
-  currentAttempts: Attempt[],
+  history: LearnerHistory,
   attempt: Attempt
-): Attempt[] {
-  const attempts = [...currentAttempts, attempt].slice(-MAX_ATTEMPTS)
+): LearnerHistory {
+  const attempts = [...history.attempts, attempt].slice(-MAX_ATTEMPTS)
   try {
     window.localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(attempts))
   } catch {
     // Storage unavailable (private window, blocked site data)
   }
-  return attempts
+
+  const isNewBest =
+    !attempt.practice &&
+    (history.personalBest === null || attempt.wpm > history.personalBest)
+  if (!isNewBest) return { attempts, personalBest: history.personalBest }
+  savePersonalBest(attempt.wpm)
+  return { attempts, personalBest: attempt.wpm }
 }
 
 export function buildKeyStats(
