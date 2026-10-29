@@ -5,7 +5,7 @@ import {
   startTest,
   Test,
   typedPortion,
-} from './typingTest'
+} from '../../src/typingTest'
 
 const START = Date.parse('2026-10-29T12:00:00Z')
 // Presses each key one second apart, starting at START
