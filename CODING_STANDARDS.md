@@ -13,11 +13,12 @@ How code in this repo is written and reviewed. Tooling enforces the mechanical r
 | Formatting             | `npm run prettier:check` | Prettier defaults       |
 | Tests and 85% coverage | `npm test`               | `vite.config.ts`        |
 | Commit messages        | `npx commitlint`         | `commitlint.config.mjs` |
+| End-to-end             | `npm run e2e`            | `playwright.config.ts`  |
 
 `npm run verify` runs the first four. They run three times:
 
 1. **On commit:** the Husky `pre-commit` hook runs `npm run verify`, and the `commit-msg` hook runs commitlint. `npm install` sets the hooks up.
-2. **On every pull request:** `.github/workflows/checks.yml` runs `npm run verify` and commitlint over the PR's commits.
+2. **On every pull request:** `.github/workflows/checks.yml` runs `npm run verify`, `npm run e2e` and commitlint over the PR's commits. End-to-end tests build the site and open real browsers, so they run here rather than on every commit.
 3. **Before every deploy:** `.github/workflows/deploy.yml` runs `npm run verify` and stops if it fails.
 
 Fix a failing check rather than skipping it with `--no-verify`.
@@ -102,6 +103,7 @@ npm test          # one full run with coverage, as CI does
 
 - Test through a module's exports (`tests/unit/`) or by driving a page as a learner would (`tests/integration/`), never through private functions.
 - Expected values are literals or worked examples, never recomputed the way the code computes them.
+- Behaviour only a real browser shows (CSS, layout, dialogs, the keyboard warning) gets an end-to-end test in `tests/e2e/*.spec.ts`, run in desktop Chromium, phone Chromium and WebKit (Safari's engine).
 - A test that would still pass with the change reverted proves nothing; break the change on purpose and confirm a test fails.
 
 ---
