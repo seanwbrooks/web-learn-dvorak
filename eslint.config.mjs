@@ -9,9 +9,9 @@ export default defineConfig(
   globalIgnores(['dist/']),
   eslint.configs.recommended,
   tseslint.configs.recommended,
-  // The Contact form's Lambda runs on Node, not in the browser
+  // The Contact form's Lambda (and its test) run on Node, not in the browser
   {
-    files: ['api/**/*.mjs'],
+    files: ['src/api/**/*.mjs', 'tests/**/*.mjs'],
     languageOptions: { globals: { Buffer: 'readonly', process: 'readonly' } },
   }
 )

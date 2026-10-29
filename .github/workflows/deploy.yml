@@ -35,10 +35,10 @@ jobs:
         with:
           use-installer: true
 
-      # Role is created by github-deploy-role.yaml (see docs/adr/0003)
+      # Role is created by infra/github-deploy-role.yaml (see docs/adr/0003)
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::830550549062:role/learn-dvorak-github-deploy
           aws-region: us-east-1
 
-      - run: ./deploy.sh
+      - run: ./scripts/deploy.sh

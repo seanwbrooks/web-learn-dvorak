@@ -1,5 +1,9 @@
 version = 0.1
 
+# The stack is defined in infra/ (see README); every sam command reads it from there
+[default.global.parameters]
+template_file = "infra/template.yaml"
+
 [default.deploy.parameters]
 stack_name = "learn-dvorak-app"
 resolve_s3 = true

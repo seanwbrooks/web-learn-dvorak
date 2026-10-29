@@ -1,6 +1,6 @@
 # Learner data stays in the browser
 
-Attempts, Personal Best and everything derived from them (Miss Rates, Weak Keys) are stored only in the learner's browser via localStorage. The app is a static site on S3 (see `template.yaml`), and keeping it that way means no accounts, no API and near-zero running cost.
+Attempts, Personal Best and everything derived from them (Miss Rates, Weak Keys) are stored only in the learner's browser via localStorage. The app is a static site on S3 (see `infra/template.yaml`), and keeping it that way means no accounts, no API and near-zero running cost.
 
 ## Consequences
 

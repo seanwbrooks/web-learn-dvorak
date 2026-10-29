@@ -4,6 +4,9 @@
 # (see docs/adr/0003), or locally with an SSO session.
 set -euo pipefail
 
+# Paths below (dist/, samconfig.toml) are relative to the repo root
+cd "$(dirname "$0")/.."
+
 STACK_NAME=learn-dvorak-app
 REGION=us-east-1
 
