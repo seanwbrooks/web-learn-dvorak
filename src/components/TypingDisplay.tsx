@@ -1,6 +1,6 @@
 import React, { JSX } from 'react'
-import { keyLabel } from '../utils'
-import { PassageLength } from '../history'
+import { keyLabel } from '../keyboard'
+import { PassageLength } from '../learnerHistory'
 import LengthToggle from './LengthToggle'
 import './TypingDisplay.css'
 

@@ -115,19 +115,3 @@ export function recordAttempt(
   savePersonalBest(attempt.wpm)
   return { attempts, personalBest: attempt.wpm }
 }
-
-export function buildKeyStats(
-  needed: Record<string, number>,
-  missed: Record<string, number>,
-  wrongKeypresses: Record<string, number>
-): Record<string, KeyStats> {
-  const keys: Record<string, KeyStats> = {}
-  for (const [key, count] of Object.entries(needed)) {
-    keys[key] = {
-      needed: count,
-      missed: missed[key] ?? 0,
-      wrongKeypresses: wrongKeypresses[key] ?? 0,
-    }
-  }
-  return keys
-}

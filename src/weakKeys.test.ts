@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { findWeakKeys } from './missRate'
-import { Attempt, KeyStats } from './history'
+import { findWeakKeys } from './weakKeys'
+import { Attempt, KeyStats } from './learnerHistory'
 
 // An Attempt where each key was needed and missed the given number of times
 const attempt = (

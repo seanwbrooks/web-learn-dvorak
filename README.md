@@ -49,6 +49,8 @@ The shared design values (colours, font sizes, spacing, radii and shadows) are C
 
 Three Vite pages, each with a folder in `src/pages/`: `index.html` → `home/` (the typing practice), `about.html` → `about/` (about the Dvorak layout) and `contact.html` → `contact/` (a contact form). The HTML files stay at the root because they are the site's URLs, and each is listed in `vite.config.ts`. Every page renders inside `src/pages/site/Site.tsx`, the shared shell: background, page borders, the 75% zoom and the nav bar. Components used by the home page, and the shared `Button.css`, are in `src/components/`.
 
+The app's logic lives in one module per glossary concept, flat in `src/`: `passage.ts` (generating a Passage or Practice Passage), `typingTest.ts` (the rules of a Test, ending in an Attempt), `weakKeys.ts` (Miss Rates and Weak Keys), `learnerHistory.ts` (Attempts, Personal Best and settings in localStorage; see ADR 0001) and `keyboard.ts` (the Dvorak layout and physical keys).
+
 ## Hosting
 
 Live at [learndvorak.com](https://learndvorak.com), served by CloudFront from a private S3 bucket with an ACM certificate. The domain is registered at GoDaddy and its DNS is hosted in Route 53. `template.yaml` defines the stack; see [ADR 0002](docs/adr/0002-cloudfront-private-s3-route53.md).

@@ -1,4 +1,5 @@
-import { words, keyMap } from './data'
+import words from './words-full.json'
+import { toPhysicalKey } from './keyboard'
 
 export function generatePassage(wordCount = 50) {
   let passage = ''
@@ -69,31 +70,4 @@ const PUNCTUATION = "~`!@#$%^&*(){}[]/?=+|'-_,.;:"
 function getRandomPunctuation() {
   const randomIndex = Math.floor(Math.random() * PUNCTUATION.length)
   return PUNCTUATION.charAt(randomIndex)
-}
-
-// How a physical key is named to the learner
-export const keyLabel = (key: string) =>
-  key === ' ' ? 'Space' : key.toUpperCase()
-
-// The physical Dvorak key that produces a character, e.g. 'A' -> 'a', '"' -> "'"
-export function toPhysicalKey(char: string): string {
-  const lower = char.toLowerCase()
-  return keyMap[lower] ?? lower
-}
-
-// How many times each physical key is needed to type the passage
-export function countKeysNeeded(passage: string): Record<string, number> {
-  const needed: Record<string, number> = {}
-  for (const char of passage) {
-    const key = toPhysicalKey(char)
-    needed[key] = (needed[key] ?? 0) + 1
-  }
-  return needed
-}
-
-// Standard WPM: every five correctly typed characters count as one word
-export function calculateWPM(charCount: number, elapsedMs: number): number {
-  const elapsedMins = elapsedMs / 60000
-  if (elapsedMins <= 0) return 0
-  return Math.round(charCount / 5 / elapsedMins)
 }

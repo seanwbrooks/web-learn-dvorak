@@ -5,7 +5,7 @@ import {
   loadAttempts,
   loadPersonalBest,
   recordAttempt,
-} from './history'
+} from './learnerHistory'
 
 const attempt = (wpm: number, practice = false): Attempt => ({
   wpm,

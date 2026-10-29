@@ -1,4 +1,4 @@
-import { Attempt, KeyStats } from './history'
+import { Attempt, KeyStats } from './learnerHistory'
 
 export interface KeyMissRate {
   key: string

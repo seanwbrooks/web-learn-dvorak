@@ -11,8 +11,8 @@ import Performance from '../../components/Performance'
 import Progress from '../../components/Progress'
 import IntroModal from '../../components/IntroModal'
 import Site from '../site/Site'
-import { generatePassage, generatePracticePassage } from '../../utils'
-import { findWeakKeys } from '../../missRate'
+import { generatePassage, generatePracticePassage } from '../../passage'
+import { findWeakKeys } from '../../weakKeys'
 import {
   loadIntroSeen,
   saveIntroSeen,
@@ -21,7 +21,7 @@ import {
   PassageLength,
   loadLearnerHistory,
   recordAttempt,
-} from '../../history'
+} from '../../learnerHistory'
 import {
   Test,
   startTest,

@@ -1,5 +1,5 @@
 import React, { JSX, useState } from 'react'
-import { Attempt } from '../history'
+import { Attempt } from '../learnerHistory'
 import './Progress.css'
 
 interface ProgressProps {

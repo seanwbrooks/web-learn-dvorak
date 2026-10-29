@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { generatePassage, generatePracticePassage } from './utils'
+import { generatePassage, generatePracticePassage } from './passage'
 
 // The generator is random, so each property is checked over many Passages
 const many = <T>(make: () => T, runs = 500) =>
