@@ -1,120 +1,122 @@
-# Coding Standards & Architecture Guidelines
+# Coding Standards
 
-This document outlines the mandatory technical stack, naming conventions, pattern enforcement, and workflows for this repository. Adherence ensures determinism, quality, and strict type safety.
-
----
-
-## 1. Technical Stack & Enforcement Hierarchy
-
-Our project enforces alignment via layered validation tiers. Do not attempt to bypass these checks.
-
-* **Tier 1 (Deterministic Scanners):** ESLint / Biome / Prettier configuration files.
-* **Tier 2 (Pre-commit Hooks):** Husky scripts executing `npm run verify`.
-* **Tier 3 (AI/Human Review):** Rigid validation against this specification.
-* **Tier 4 (Advisory Prose):** Contextual documentation.
+How code in this repo is written and reviewed. Tooling enforces the mechanical rules; this file holds the judgement calls a reviewer checks by reading the diff. Domain words come from [GLOSSARY.md](GLOSSARY.md), and decisions already made are in [docs/adr/](docs/adr/).
 
 ---
 
-## 2. Naming Conventions
+## 1. Enforcement
 
-Strict casing constraints must be applied uniformly across the entire filesystem and code architecture:
+| Check      | Command                  | Configured in       |
+| :--------- | :----------------------- | :------------------ |
+| Lint       | `npm run lint`           | `eslint.config.mjs` |
+| Types      | `npm run type`           | `tsconfig.json`     |
+| Formatting | `npm run prettier:check` | Prettier defaults   |
+| Tests      | `npm test`               | `vite.config.ts`    |
 
-| Artifact | Convention | Example |
-| :--- | :--- | :--- |
-| **Files, APIs, & Git Branches** | `kebab-case` | `user-profile.ts`, `feature/auth-refresh` |
-| **Components, Classes, & Types**| `PascalCase` | `UserProfileCard`, `ValidationError` |
-| **Functions, Methods, & Variables**| `camelCase` | `fetchUserData()`, `isAuthorized` |
-| **Constants & Environment Vars** | `UPPER_SNAKE_CASE` | `MAX_RETRY_ATTEMPTS`, `DATABASE_URL` |
-| **Database Tables & Columns**   | `snake_case` | `user_accounts`, `created_at` |
+There is no pre-commit hook. The deploy workflow (`.github/workflows/deploy.yml`) runs all four on every push to `master` and stops before deploying if one fails, so run them before opening a PR: a failure surfaces only after merge.
 
 ---
 
-## 3. Code Design Patterns (Show, Don't Tell)
+## 2. Naming
 
-### 3.1 Error Handling
-Fail early, fail hard, and return domain-specific classes. Never rely on generic error messages.
+| What                                  | Convention                                  | Example                           |
+| :------------------------------------ | :------------------------------------------ | :-------------------------------- |
+| Domain modules in `src/`              | `camelCase`, named after a glossary concept | `passage.ts`, `learnerHistory.ts` |
+| React components and their stylesheet | `PascalCase`, the stylesheet named after it | `Keyboard.tsx`, `Keyboard.css`    |
+| Shared stylesheets                    | lowercase                                   | `tokens.css`, `page.css`          |
+| Tests                                 | the concept they cover, under `tests/`      | `tests/unit/weakKeys.test.ts`     |
+| Functions and variables               | `camelCase`                                 | `findWeakKeys`, `typedPortion`    |
+| Module-level constants                | `UPPER_SNAKE_CASE`                          | `ROW_UNITS`, `ATTEMPTS_KEY`       |
+| DynamoDB attributes                   | `camelCase`                                 | `createdAt`                       |
+| Branches                              | `kebab-case`                                | `mobile-warning`                  |
+
+Name things with the glossary's terms (Test, Passage, Attempt, Weak Key, ...) and never with the words it lists under _Avoid_. A new concept gets a glossary entry in the same PR.
+
+---
+
+## 3. Code Design Patterns
+
+### 3.1 Errors the learner sees
+
+Failures that reach the learner become a plain sentence telling them what to do next. The Contact Lambda returns its validation errors as `{ error }`, and the form shows that sentence or its own fallback.
 
 <!-- example-bad -->
+
 ```typescript
-// ❌ BAD: Catching generic errors or returning untyped strings
-try {
-  const user = await db.fetch(id);
-  if (!user) return "Not found";
-} catch (e) {
-  console.log(e);
-}
+// ❌ BAD: the learner sees a status code, or nothing
+const response = await fetch(ENDPOINT, { method: 'POST', body })
+if (!response.ok) throw new Error(`HTTP ${response.status}`)
 ```
 
 <!-- example-good -->
+
 ```typescript
-//  GOOD: Using domain-specific error classes and structured handling
+// ✅ GOOD: every failure ends in a sentence the learner can act on
 try {
-  const user = await db.fetch(id);
-  if (!user) {
-    throw new NotFoundError(`User with ID ${id} does not exist.`);
+  const response = await fetch(ENDPOINT, { method: 'POST', body })
+  if (!response.ok) {
+    const { error } = await response.json().catch(() => ({}))
+    setStatus({ kind: 'failed', message: error ?? 'Try again in a minute.' })
   }
-  return user;
-} catch (error) {
-  logger.error({ error, userId: id }, "Failed to retrieve user profile");
-  throw error;
+} catch {
+  setStatus({ kind: 'failed', message: 'Check your connection and try again.' })
 }
 ```
 
-### 3.2 Asynchronous Control Flow
-Always handle async boundaries explicitly. Avoid floating promises unless explicitly tracking them with `void`.
+### 3.2 Browser storage
 
-<!-- example-bad -->
+Learner history stays in `localStorage` ([ADR 0001](docs/adr/0001-learner-data-stays-in-the-browser.md)). Storage can be missing or blocked (private windows, blocked site data), so every read and write sits in `try`/`catch`: a read falls back to the empty value and a failed write is dropped, and the page keeps working either way.
+
+### 3.3 Async work
+
+Every promise is awaited inside a `try`/`catch` that handles its failure, as in 3.1. When work genuinely runs in the background, its rejection still gets a handler:
+
 ```typescript
-// ❌ BAD: Floating promise with ignored failure paths
-function init() {
-  saveMetrics(); // No await, unhandled rejection risk
-}
+// ✅ GOOD: backgrounded, and its failure is still handled
+startBackgroundJob().catch((error) => reportFailure(error))
 ```
 
-<!-- example-good -->
-```typescript
-//  GOOD: Awaiting asynchronously or using void to indicate intent
-async function init(): Promise<void> {
-  try {
-    await saveMetrics();
-  } catch (error) {
-    trackFailure(error);
-  }
-}
+### 3.4 Design values
 
-// Or explicitly void if intentionally backgrounded:
-void fireAndForgetBackgroundJob();
-```
+Colours, font sizes, spacing, radii and shadows come from the tokens in `src/tokens.css`. A new value goes into `tokens.css` and the [design system](https://claude.ai/artifact/DePUGvPge9wRPzhCdsvSUG) in the same change.
 
 ---
 
-## 4. Test-Driven Development (TDD) Loop
+## 4. Tests
 
-TDD is mandatory for all modifications, including business logic updates and core utility enhancements.
-
-1. **Write a Failing Test:** Draft a deterministic unit or behavior-driven test.
-2. **Verify Failure:** Run the test suite to confirm the exact failure reason.
-3. **Write Minimal Code:** Implement only the necessary adjustments to satisfy the test.
-4. **Refactor Safely:** Optimize code readability and architecture while keeping tests green.
+Write the failing test first, watch it fail for the expected reason, then write only the code that makes it pass. Refactoring happens in review, once the tests are green.
 
 ```bash
-# Execute local test suite verification loop
-npm run test:watch
+npx vitest        # watch mode while working
+npm test          # one full run, as CI does
 ```
+
+- Test through a module's exports (`tests/unit/`) or by driving a page as a learner would (`tests/integration/`), never through private functions.
+- Expected values are literals or worked examples, never recomputed the way the code computes them.
+- A test that would still pass with the change reverted proves nothing; break the change on purpose and confirm a test fails.
 
 ---
 
-## 5. Git & Review Workflow
+## 5. Evidence for UI Changes
 
-### Commit Messages
-We adhere strictly to the **Conventional Commits** specification: `<type>(<optional scope>): <description>`
+- **Pure moves and refactors:** a pixel comparison against the live site shows nothing changed. That proves _unchanged_, not _correct_.
+- **New or changed behaviour:** show the new behaviour working, in screenshots or a test.
+- **Mobile changes:** an emulator doesn't bounce on overscroll, show Safari's toolbar or open an on-screen keyboard. Say in the PR what was checked only in emulation, and check it on a real phone before merging.
 
-* `feat(auth):` Implement JSON Web Token (JWT) rotation mechanisms.
-* `fix(ui):` Correct race condition rendering user avatars on slower viewports.
-* `docs(api):` Clear up ambiguity on pagination boundaries within the endpoints.
+---
 
-### Pull Request Checklist
-Before requesting review, ensure your branch passes validation:
-- [ ] No compilation warnings or typescript linting issues.
-- [ ] Coverage metrics remain at or above project threshold (85%).
-- [ ] Code modifications do not overfetch fields or data layers.
+## 6. Git & Review Workflow
+
+### Commit messages
+
+A short imperative sentence in the glossary's terms, with a body explaining _why_ when it isn't obvious:
+
+- `Warn on phones and tablets that a Test needs a keyboard`
+- `Move tests to tests/, named by concept`
+- `Pin deploy-role.sh to us-east-1, like deploy.sh`
+
+### Pull request checklist
+
+- [ ] All four checks in section 1 pass locally.
+- [ ] The PR body shows evidence that matches section 5.
+- [ ] A change that adds an AWS resource type comes with its permissions in `infra/github-deploy-role.yaml`, applied by hand with `scripts/deploy-role.sh` before merging ([ADR 0003](docs/adr/0003-deploy-from-github-actions.md)).
