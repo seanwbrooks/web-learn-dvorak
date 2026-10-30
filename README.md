@@ -59,7 +59,7 @@ How code is written, tested and committed is in [CODING_STANDARDS.md](CODING_STA
 
 ## Hosting
 
-Live at [learndvorak.com](https://learndvorak.com), served by CloudFront from a private S3 bucket with an ACM certificate. The domain is registered at GoDaddy and its DNS is hosted in Route 53. `infra/template.yaml` defines the stack (`samconfig.toml` at the root points SAM there); see [ADR 0002](docs/adr/0002-cloudfront-private-s3-route53.md).
+Live at [learndvorak.com](https://learndvorak.com), served by CloudFront from a private S3 bucket with an ACM certificate. The domain is registered at GoDaddy and its DNS is hosted in Route 53. `infra/template.yaml` defines the stack, deployed by `scripts/deploy.sh`, which looks up the hosted zone's ID from the domain rather than keeping it in the repo; see [ADR 0002](docs/adr/0002-cloudfront-private-s3-route53.md).
 
 The Contact form posts to `/api/contact`, which CloudFront routes to the Lambda in `src/api/contact/`; it stores each message in a DynamoDB table. Read messages in the DynamoDB console under the table named `learn-dvorak-app-ContactTable-…`; see [ADR 0004](docs/adr/0004-contact-messages-in-dynamodb.md).
 

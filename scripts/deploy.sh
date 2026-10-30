@@ -4,11 +4,14 @@
 # (see docs/adr/0003), or locally with an SSO session.
 set -euo pipefail
 
-# Paths below (dist/, samconfig.toml) are relative to the repo root
+# Paths below (dist/, infra/) are relative to the repo root
 cd "$(dirname "$0")/.."
 
 STACK_NAME=learn-dvorak-app
+# CloudFront certificates must live in us-east-1 (docs/adr/0002)
 REGION=us-east-1
+# Registered at GoDaddy and delegated to a Route 53 hosted zone
+DOMAIN=learndvorak.com
 
 stack_output() {
   aws cloudformation describe-stacks \
@@ -22,7 +25,17 @@ echo "Building React application..."
 npm run build
 
 echo "Deploying SAM template..."
-sam deploy --no-fail-on-empty-changeset
+HOSTED_ZONE_ID=$(scripts/hosted-zone-id.sh "$DOMAIN")
+sam deploy \
+  --template-file infra/template.yaml \
+  --stack-name "$STACK_NAME" \
+  --region "$REGION" \
+  --resolve-s3 \
+  --s3-prefix "$STACK_NAME" \
+  --capabilities CAPABILITY_IAM \
+  --parameter-overrides "DomainName=$DOMAIN" "HostedZoneId=$HOSTED_ZONE_ID" \
+  --no-confirm-changeset \
+  --no-fail-on-empty-changeset
 
 BUCKET_NAME=$(stack_output BucketName)
 DISTRIBUTION_ID=$(stack_output DistributionId)

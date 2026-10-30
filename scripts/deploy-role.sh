@@ -11,8 +11,10 @@ if ! aws sts get-caller-identity >/dev/null 2>&1; then
   exit 1
 fi
 
+HOSTED_ZONE_ID=$(scripts/hosted-zone-id.sh learndvorak.com)
 aws cloudformation deploy \
   --template-file infra/github-deploy-role.yaml \
+  --parameter-overrides "HostedZoneId=$HOSTED_ZONE_ID" \
   --stack-name learn-dvorak-github-deploy \
   --region us-east-1 \
   --capabilities CAPABILITY_NAMED_IAM \

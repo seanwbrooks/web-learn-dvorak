@@ -14,9 +14,9 @@ Parameters:
   AppStackName:
     Type: String
     Default: learn-dvorak-app
+  # Looked up by scripts/deploy-role.sh rather than committed
   HostedZoneId:
     Type: AWS::Route53::HostedZone::Id
-    Default: Z057914128MXPILW6AYEP
 
 Resources:
   GitHubOidcProvider:

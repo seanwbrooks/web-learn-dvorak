@@ -7,6 +7,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Local SAM settings (samconfig.toml) can hold account-specific IDs; the
+# deploy scripts pass everything the stacks need
+*.toml
+
 node_modules
 dist
 dist-ssr
