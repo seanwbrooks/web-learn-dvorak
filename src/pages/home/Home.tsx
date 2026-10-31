@@ -20,6 +20,9 @@ import {
   loadPassageLength,
   savePassageLength,
   PassageLength,
+  loadLevel,
+  saveLevel,
+  Level,
   loadLearnerHistory,
   recordAttempt,
 } from '../../learnerHistory'
@@ -32,12 +35,17 @@ import {
 } from '../../typingTest'
 
 type TestAction =
-  | { type: 'start'; passage: string; practiceKeys: string[] | null }
+  | {
+      type: 'start'
+      passage: string
+      practiceKeys: string[] | null
+      level: Level
+    }
   | { type: 'press'; key: string; now: number }
 
 const testReducer = (test: Test, action: TestAction): Test =>
   action.type === 'start'
-    ? startTest(action.passage, action.practiceKeys)
+    ? startTest(action.passage, action.practiceKeys, action.level)
     : press(test, action.key, action.now)
 
 // A phone or tablet, whose main input is a finger rather than a mouse
@@ -46,8 +54,9 @@ const onTouchscreen = () =>
 
 function Home() {
   const [passageLength, setPassageLength] = useState(loadPassageLength)
-  const [test, dispatch] = useReducer(testReducer, passageLength, (length) =>
-    startTest(generatePassage(length))
+  const [level, setLevel] = useState(loadLevel)
+  const [test, dispatch] = useReducer(testReducer, null, () =>
+    startTest(generatePassage(passageLength, level), null, level)
   )
   const [history, setHistory] = useState(loadLearnerHistory)
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null)
@@ -57,17 +66,36 @@ function Home() {
   const weakKeys = useMemo(() => findWeakKeys(history.attempts), [history])
   const { attempt, practiceKeys, latestWrongKeypress } = test
 
-  const startNewTest = (passage: string, keys: string[] | null = null) =>
-    dispatch({ type: 'start', passage, practiceKeys: keys })
-  const restartTest = () => startNewTest(generatePassage(passageLength))
-  // Switching lengths starts a fresh Test; the abandoned one isn't recorded
+  const startNewTest = (
+    length: PassageLength = passageLength,
+    testLevel: Level = level
+  ) =>
+    dispatch({
+      type: 'start',
+      passage: generatePassage(length, testLevel),
+      practiceKeys: null,
+      level: testLevel,
+    })
+  const restartTest = () => startNewTest()
+  // Switching lengths or Levels starts a fresh Test; the abandoned one isn't
+  // recorded
   const changePassageLength = (length: PassageLength) => {
     setPassageLength(length)
     savePassageLength(length)
-    startNewTest(generatePassage(length))
+    startNewTest(length)
+  }
+  const changeLevel = (newLevel: Level) => {
+    setLevel(newLevel)
+    saveLevel(newLevel)
+    startNewTest(passageLength, newLevel)
   }
   const startPractice = () =>
-    startNewTest(generatePracticePassage(weakKeys, 25), weakKeys)
+    dispatch({
+      type: 'start',
+      passage: generatePracticePassage(weakKeys, 25),
+      practiceKeys: weakKeys,
+      level,
+    })
 
   // A finished Test becomes an Attempt in the learner's history, before the
   // results paint, so they never show without the Personal Best
@@ -87,7 +115,7 @@ function Home() {
     const handleKeyUp = (e: KeyboardEvent) => {
       // A dialog is covering the Passage
       if (introOpen || keyboardWarningOpen) return
-      // A key pressed on a button (the length toggle, the nav bar's ?) works
+      // A key pressed on a button (the toggles, the nav bar's ?) works
       // that control; it isn't typing
       if (e.target instanceof Element && e.target.closest('button, a')) return
       dispatch({ type: 'press', key: e.key, now: Date.now() })
@@ -123,7 +151,7 @@ function Home() {
         <>
           <Performance
             wpm={attempt.wpm}
-            personalBest={history.personalBest}
+            personalBest={history.personalBests[level]}
             isComplete
             isPractice={practiceKeys !== null}
             onRestart={restartTest}
@@ -132,7 +160,8 @@ function Home() {
           {practiceKeys === null && (
             <Progress
               attempts={history.attempts}
-              personalBest={history.personalBest}
+              personalBest={history.personalBests[level]}
+              level={level}
             />
           )}
         </>
@@ -143,6 +172,8 @@ function Home() {
           remainingPassage={remainingPassage(test)}
           passageLength={passageLength}
           onPassageLength={changePassageLength}
+          level={level}
+          onLevel={changeLevel}
         />
       )}
 

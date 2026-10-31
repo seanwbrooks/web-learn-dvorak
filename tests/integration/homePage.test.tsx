@@ -187,6 +187,71 @@ describe('Passage length', () => {
   })
 })
 
+describe('Level', () => {
+  const easy = () => screen.getByRole('button', { name: 'Easy' })
+
+  it('starts on Hard and switches to Easy, starting a fresh Test', () => {
+    render(<Home />)
+    expect(
+      screen.getByRole('button', { name: 'Hard' }).getAttribute('aria-pressed')
+    ).toBe('true')
+    typeText(remaining().slice(0, 3))
+
+    fireEvent.click(easy())
+
+    expect(typed()).toBe('')
+    expect(remaining()).toMatch(/^[aoeuidhtns ]+$/)
+    expect(wordCount()).toBe(50)
+  })
+
+  it('remembers the choice on the next visit and on Try Again', () => {
+    const { unmount } = render(<Home />)
+    fireEvent.click(easy())
+    unmount()
+
+    render(<Home />)
+    expect(remaining()).toMatch(/^[aoeuidhtns ]+$/)
+    finishPassage(40)
+    fireEvent.click(screen.getByText('Try Again'))
+    expect(remaining()).toMatch(/^[aoeuidhtns ]+$/)
+  })
+
+  it('keeps Personal Bests and the WPM chart apart', () => {
+    render(<Home />)
+    finishPassage(40)
+    fireEvent.click(screen.getByText('Try Again'))
+    finishPassage(45)
+    fireEvent.click(screen.getByText('Try Again'))
+
+    fireEvent.click(easy())
+    finishPassage(90)
+    expect(screen.getByText('Personal Best: 90 WPM')).toBeTruthy()
+    fireEvent.click(screen.getByText('Try Again'))
+    finishPassage(80)
+    expect(screen.getByText('Personal Best: 90 WPM')).toBeTruthy()
+    expect(screen.getByText('WPM over your last 2 Easy Tests')).toBeTruthy()
+
+    fireEvent.click(screen.getByText('Try Again'))
+    fireEvent.click(screen.getByRole('button', { name: 'Hard' }))
+    finishPassage(30)
+    expect(screen.getByText('Personal Best: 45 WPM')).toBeTruthy()
+    expect(screen.getByText('WPM over your last 3 Hard Tests')).toBeTruthy()
+  })
+
+  it('treats Attempts from before Levels as Hard', () => {
+    window.localStorage.setItem('dvorakPersonalBest', '70')
+    window.localStorage.setItem(
+      'dvorakAttempts',
+      JSON.stringify([{ wpm: 70, date: '2026-10-25T12:00:00Z', keys: {} }])
+    )
+    render(<Home />)
+    finishPassage(40)
+
+    expect(screen.getByText('Personal Best: 70 WPM')).toBeTruthy()
+    expect(screen.getByText('WPM over your last 2 Hard Tests')).toBeTruthy()
+  })
+})
+
 describe('the intro', () => {
   it('opens on a first visit and holds typing until closed', () => {
     window.localStorage.clear()

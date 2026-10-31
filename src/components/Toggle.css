@@ -1,11 +1,7 @@
-/* Floats in the Passage's top-right corner, so the words wrap around it
-   instead of the page gaining a row */
-.length-toggle {
-  float: right;
+.toggle {
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  margin: 0 0 var(--space-2) var(--space-4);
   padding: var(--space-1);
   border: 2px solid var(--line-strong);
   border-radius: var(--radius-pill);
@@ -15,7 +11,7 @@
   line-height: 1;
 }
 
-.length-toggle button {
+.toggle button {
   min-width: 40px;
   padding: var(--space-1) var(--space-3);
   border: none;
@@ -27,31 +23,21 @@
   cursor: pointer;
 }
 
-.length-toggle button:hover {
+.toggle button:hover {
   color: var(--ink);
 }
 
-.length-toggle button[aria-pressed='true'] {
+.toggle button[aria-pressed='true'] {
   background: var(--key-target);
   color: var(--on-key-target);
 }
 
-.length-toggle button:focus-visible {
+.toggle button:focus-visible {
   outline: 2px solid var(--key-target);
   outline-offset: 2px;
 }
 
-.length-toggle-unit {
+.toggle-unit {
   padding: 0 var(--space-2) 0 var(--space-1);
   color: var(--ink-secondary);
-}
-
-/* Too wide to float beside a phone-width Passage: give it its own row */
-@media (max-width: 768px) {
-  .length-toggle {
-    float: none;
-    width: fit-content;
-    margin: 0 0 var(--space-3) auto;
-    font-size: var(--text-base);
-  }
 }
