@@ -15,7 +15,7 @@ interface SiteProps {
 }
 
 // The shell every page shares: the background, the page borders and zoom
-// that keep a page within one laptop screen, and the nav bar
+// that keep a page within one laptop screen, the nav bar, and the footer
 function Site({ current, onHelp, outside, children }: SiteProps): JSX.Element {
   return (
     <div className="app">
@@ -24,6 +24,9 @@ function Site({ current, onHelp, outside, children }: SiteProps): JSX.Element {
         <NavBar current={current} onHelp={onHelp} />
         {children}
       </div>
+      <footer className="site-footer">
+        © {new Date().getFullYear()} Sean Brooks
+      </footer>
     </div>
   )
 }
