@@ -15,6 +15,15 @@
   flex-shrink: 0;
 }
 
+/* Float in the Passage's top-right corner, so the words wrap around them
+   instead of the page gaining a row */
+.passage-options {
+  float: right;
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2) var(--space-4);
+}
+
 .typed-portion {
   color: var(--typed);
   text-shadow: 0 0 10px color-mix(in srgb, var(--typed) 50%, transparent);
@@ -42,5 +51,17 @@
 @media (max-width: 768px) {
   .typing-display {
     font-size: var(--text-2xl);
+  }
+
+  /* Too wide to float beside a phone-width Passage: give them their own row */
+  .passage-options {
+    float: none;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin: 0 0 var(--space-3);
+  }
+
+  .toggle {
+    font-size: var(--text-base);
   }
 }

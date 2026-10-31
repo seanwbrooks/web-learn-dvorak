@@ -1,13 +1,14 @@
 // A Test: one pass through a Passage, from the first keypress to the Attempt
 // it ends in. Plain data and functions, so the rules of typing can be tested
 // without React; the home page drives it with useReducer.
-import { Attempt, KeyStats } from './learnerHistory'
+import { Attempt, KeyStats, Level } from './learnerHistory'
 import { specialKeys, toPhysicalKey } from './keyboard'
 
 export interface Test {
   passage: string
   // The Weak Keys a Practice Test targets; null during a normal Test
   practiceKeys: string[] | null
+  level: Level
   typedIndex: number
   // Timed from the first correct character
   startedAt: number | null
@@ -23,11 +24,13 @@ export interface Test {
 
 export function startTest(
   passage: string,
-  practiceKeys: string[] | null = null
+  practiceKeys: string[] | null = null,
+  level: Level = 'hard'
 ): Test {
   return {
     passage,
     practiceKeys,
+    level,
     typedIndex: 0,
     startedAt: null,
     missedPositions: [],
@@ -92,7 +95,7 @@ function finish(test: Test, now: number): Attempt {
       missedKeys,
       test.wrongKeypresses
     ),
-    ...(test.practiceKeys && { practice: true }),
+    ...(test.practiceKeys ? { practice: true } : { level: test.level }),
   }
 }
 

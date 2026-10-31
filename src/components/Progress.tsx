@@ -1,10 +1,11 @@
 import React, { JSX, useState } from 'react'
-import { Attempt } from '../learnerHistory'
+import { Attempt, Level, attemptLevel, levelLabel } from '../learnerHistory'
 import './Progress.css'
 
 interface ProgressProps {
   attempts: Attempt[]
   personalBest: number | null
+  level: Level
 }
 
 const WIDTH = 600
@@ -28,12 +29,16 @@ function niceMax(value: number): number {
 function Progress({
   attempts,
   personalBest,
+  level,
 }: ProgressProps): JSX.Element | null {
   const [hovered, setHovered] = useState<number | null>(null)
 
-  // Practice Tests stay off the WPM line (see GLOSSARY.md, Practice Test)
+  // The WPM line follows one Level; Practice Tests stay off it (see
+  // GLOSSARY.md, Practice Test)
   const numbered = attempts.map((attempt, i) => ({ ...attempt, number: i + 1 }))
-  const tests = numbered.filter(({ practice }) => !practice)
+  const tests = numbered.filter(
+    (attempt) => !attempt.practice && attemptLevel(attempt) === level
+  )
   if (tests.length < 2) return null
 
   const yMax = niceMax(
@@ -62,12 +67,14 @@ function Progress({
 
   return (
     <div className="progress">
-      <h3>WPM over your last {tests.length} Tests</h3>
+      <h3>
+        WPM over your last {tests.length} {levelLabel(level)} Tests
+      </h3>
       <div className="progress-chart">
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           role="img"
-          aria-label={`WPM trend over ${tests.length} Tests, latest ${tests[last].wpm}`}
+          aria-label={`WPM trend over ${tests.length} ${levelLabel(level)} Tests, latest ${tests[last].wpm}`}
           onPointerMove={onPointerMove}
           onPointerLeave={() => setHovered(null)}
         >
@@ -192,7 +199,11 @@ function Progress({
               <tr key={attempt.date}>
                 <td>{attempt.number}</td>
                 <td>{formatDate(attempt.date)}</td>
-                <td>{attempt.practice ? 'Practice' : 'Test'}</td>
+                <td>
+                  {attempt.practice
+                    ? 'Practice'
+                    : levelLabel(attemptLevel(attempt))}
+                </td>
                 <td>{attempt.wpm}</td>
               </tr>
             ))}

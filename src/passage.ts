@@ -1,7 +1,19 @@
 import words from './words-full.json'
 import { toPhysicalKey } from './keyboard'
+import { Level } from './learnerHistory'
 
-export function generatePassage(wordCount = 50) {
+const HOME_ROW_WORDS = words.filter((word) => /^[aoeuidhtns]+$/.test(word))
+
+const pickWords = (pool: string[], wordCount: number) =>
+  Array.from(
+    { length: wordCount },
+    () => pool[Math.floor(Math.random() * pool.length)]
+  ).join(' ')
+
+export function generatePassage(wordCount = 50, level: Level = 'hard') {
+  if (level === 'easy') return pickWords(HOME_ROW_WORDS, wordCount)
+  if (level === 'medium') return pickWords(words, wordCount)
+
   let passage = ''
 
   // Count only space-terminated words, so punctuation (which attaches to the

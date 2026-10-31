@@ -23,6 +23,33 @@ describe('generatePassage', () => {
   })
 })
 
+describe('a Passage at each Level', () => {
+  it.each(['easy', 'medium', 'hard'] as const)(
+    'has exactly 25 words on %s',
+    (level) => {
+      const lengths = many(() => generatePassage(25, level).split(' ').length)
+      expect(new Set(lengths)).toEqual(new Set([25]))
+    }
+  )
+
+  it('uses only home row letters on Easy', () => {
+    const passages = many(() => generatePassage(50, 'easy'))
+    expect(passages.filter((p) => !/^[aoeuidhtns ]+$/.test(p))).toEqual([])
+  })
+
+  it('uses only letters on Medium, reaching beyond the home row', () => {
+    const passages = many(() => generatePassage(50, 'medium'))
+    expect(passages.filter((p) => !/^[a-z ]+$/.test(p))).toEqual([])
+    expect(passages.join(' ')).toMatch(/[bcfgjklmpqrvwxyz]/)
+  })
+
+  it('mixes in numbers and punctuation on Hard', () => {
+    const passages = many(() => generatePassage(50, 'hard'))
+    expect(passages.join(' ')).toMatch(/[0-9]/)
+    expect(passages.join(' ')).toMatch(/[^a-z0-9 ]/)
+  })
+})
+
 describe('generatePracticePassage', () => {
   // Q and J are rare in English, so a normal Passage seldom needs them
   const weakKeys = ['q', 'j']

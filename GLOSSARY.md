@@ -13,8 +13,12 @@ A shorter Test whose Passage is weighted toward the learner's Weak Keys. It coun
 _Avoid_: Drill, lesson
 
 **Passage**:
-The generated mix of words, numbers and punctuation the learner types during one Test. A normal Passage is 25 or 50 words, whichever the learner chose last; a Practice Passage is always 25.
+The generated text the learner types during one Test. A normal Passage is 25 or 50 words at a Level, whichever the learner chose last; a Practice Passage is always 25 words, mixed like Hard.
 _Avoid_: Display words, word list
+
+**Level**:
+How much of the keyboard a normal Passage needs: Easy is words typed on the home row alone, Medium is any words, and Hard mixes in numbers and punctuation. Attempts from before Levels count as Hard.
+_Avoid_: Difficulty, mode
 
 **Typed Portion**:
 The part of the Passage the learner has already typed correctly.
@@ -25,7 +29,7 @@ A Test the learner finished, as recorded in their history with its WPM, date, an
 _Avoid_: Score, run
 
 **Personal Best**:
-The highest WPM across all of the learner's Attempts, excluding Practice Tests.
+The highest WPM across the learner's Attempts at one Level, excluding Practice Tests. Each Level has its own.
 _Avoid_: Best score, high score
 
 **WPM**:

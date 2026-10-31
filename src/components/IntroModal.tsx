@@ -27,6 +27,10 @@ function IntroModal({ open, onClose }: IntroModalProps): JSX.Element {
             the United States-Dvorak keyboard in Settings › Time &amp; language.
           </li>
           <li>
+            <strong>Pick a Level.</strong> Easy uses only the home row, Medium
+            only letters, and Hard adds numbers and punctuation.
+          </li>
+          <li>
             <strong>Type the Passage.</strong> The clock starts at your first
             correct character. A wrong key doesn&apos;t move you forward, so
             type the right one to continue.
@@ -39,7 +43,8 @@ function IntroModal({ open, onClose }: IntroModalProps): JSX.Element {
           </li>
           <li>
             <strong>Check your speed.</strong> Finish the Passage to see your
-            WPM and Personal Best. Every five characters count as one word.
+            WPM and Personal Best for that Level. Every five characters count as
+            one word.
           </li>
           <li>
             <strong>Practice your Weak Keys.</strong> Keys you often miss get a
